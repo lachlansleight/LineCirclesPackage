@@ -1,0 +1,17 @@
+{
+    "name": "LineCircles.Editor",
+    "references": [
+        "GUID:820fb15aabbbaa64ba57dfef099fa840"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
