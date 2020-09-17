@@ -1,0 +1,148 @@
+﻿#pragma kernel RunSimulation
+
+struct LineCircleSnapshot {
+	float3 CirclePosition;
+	float3 CircleRotation;
+	float CircleRadius;
+	float3 LineRotation;
+	float LineLength;
+	float ColorRange;
+	float ColorOffset;
+	float EmitTime;
+	float Hidden;
+	float LineHidden;
+};
+
+struct LineCircleVertex {
+    float4 Position;
+    float4 Color;
+};
+
+
+RWStructuredBuffer<LineCircleSnapshot> _SnapshotBuffer;
+RWStructuredBuffer<LineCircleVertex> _VertexBuffer;
+RWStructuredBuffer<LineCircleVertex> _LatestVerticesBuffer;
+RWStructuredBuffer<LineCircleVertex> _FirstVerticesBuffer;
+
+int _LineCount;
+int _IntervalOffset;
+int _LineInterval;
+
+float _TimeSpan;
+int _Spherical;
+
+int _FirstIndex;
+
+float3 rotVec(float3 input, float3 eulers) {
+    float3x3 rotX = float3x3(
+        1,				0,				0,
+        0,				cos(eulers.x),	-sin(eulers.x),
+        0,				sin(eulers.x),	cos(eulers.x)
+        );
+    float3x3 rotY = float3x3(
+        cos(eulers.y),	0,				sin(eulers.y),
+        0,				1,				0,
+        -sin(eulers.y),	0,				cos(eulers.y)
+        );
+    float3x3 rotZ = float3x3(
+        cos(eulers.z),	-sin(eulers.z),	0,
+        sin(eulers.z),	cos(eulers.z),	0,
+        0,				0,				1
+        );
+
+    float3x3 rotXYZ = mul(rotX, mul(rotY, rotZ));
+    return mul(rotXYZ, input);
+}
+
+float3 hsv2rgb(float3 c)
+{
+    float4 K = float4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+    float3 p = abs(frac(c.xxx + K.xyz) * 6.0 - K.www);
+    return c.z * lerp(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
+float3 SpherToCart(float3 c) {
+    float x = c.x * cos(c.y) * sin(c.z);
+    float y = c.y * sin(c.y) * sin(c.z);
+    float z = c.x * cos(c.z);
+    return float3(x, z, y);
+}
+
+//Note - X coordinate of num threads divided by six represents the maximum line count!
+//64 => 10 lines
+//96 = 16 lines
+//128 = 21 lines
+[numthreads(96,1,1)]
+void RunSimulation (uint3 tid : SV_GroupThreadID, uint3 gid : SV_GroupID)
+{
+	int snapshotID = gid.x;
+	uint vertexID = tid.x;
+	
+	//each work group corresponds to one snapshot
+	//each thread within that work group corresponds to one vertex, with six vertices per line (two tris of three verts each)
+	//this does mean that we're wasting compute if we are running with fewer than 10 lines, but I think that's OK for now
+	if(vertexID >= _LineCount * 6) {
+	    return;
+	}
+	
+	uint lineID = floor(vertexID / 6.0);
+	//verts 0, 1 and 5 belong to the previous snapshot to connect it to the current one
+	int snapshotOffset = 0;
+	if((vertexID % 6) % 5 < 2) {
+	    snapshotOffset = -1;
+	}
+	
+	LineCircleSnapshot snapshot = _SnapshotBuffer[max(0, snapshotID + snapshotOffset)];
+	
+	//we hide the non-rendering snapshots in the vertex shader later on
+	if(snapshot.Hidden > 0) {
+	   //return;
+	}	
+	
+	LineCircleVertex vertex = _VertexBuffer[vertexID + 6 * _LineCount * snapshotID];
+	
+	//Line interval fixing
+	if(_LineInterval > 1 && ((uint)snapshot.EmitTime + _IntervalOffset) % _LineInterval != 0) {
+	    snapshot.LineHidden = 1.0;
+	} else {
+	    snapshot.LineHidden = -1.0;
+	}
+	
+	float3 rawPos = snapshot.CirclePosition;
+    float3 pos = float3(0, 0, 0);
+
+    if (_Spherical == 0) {
+        pos = float3(rawPos.x, rawPos.y, rawPos.z);
+    }
+    else if (_Spherical == 1) {
+        pos = SpherToCart(rawPos);
+    }
+
+    float rad = snapshot.CircleRadius;
+    float3 rot = snapshot.CircleRotation;
+    float length = snapshot.LineLength;;
+    float3 lineRot = snapshot.LineRotation;
+    float colRange = snapshot.ColorRange;
+    float colOffset = snapshot.ColorOffset;
+    
+    float iF = (float)lineID / (float)_LineCount;
+    float iT = iF * 2.0 * 3.141592653589794;
+
+    float3 defaultPosition = float3(cos(iT), sin(iT), 0);
+
+    bool inner = (vertexID % 6) > 0 && (vertexID % 6) < 4;
+    vertex.Position = float4(rotVec(rad * defaultPosition, rot) + pos, 1);
+    if(!inner) {
+        vertex.Position += float4(rotVec(rotVec(length * defaultPosition, lineRot), rot), 0);
+    }
+    vertex.Color = float4(hsv2rgb(float3(frac(colOffset + colRange * iF), 1.0, 1.0)), 1.0);
+    
+    _VertexBuffer[vertexID + 6 * _LineCount * snapshotID] = vertex;
+    
+    if(snapshotID == 0) {
+        _LatestVerticesBuffer[vertexID + 6 * _LineCount] = vertex;
+    }
+    if(snapshotID == _FirstIndex) {
+        _LatestVerticesBuffer[vertexID + 6 * _LineCount + 72] = vertex;
+    }
+}

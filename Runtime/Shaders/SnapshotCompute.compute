@@ -1,0 +1,181 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel RunSimulation
+
+struct LineCircleSnapshot {
+	float3 CirclePosition;
+	float3 CircleRotation;
+	float CircleRadius;
+	float3 LineRotation;
+	float LineLength;
+	float ColorRange;
+	float ColorOffset;
+	float EmitTime;
+	float Hidden;
+	float LineHidden;
+};
+
+RWStructuredBuffer<LineCircleSnapshot> _SnapshotBuffer;
+
+//More broad things
+float _TimeStep;
+float _TimeOffset;
+int _TimeSpan;
+
+//circle position
+int   circlePos_x_type;
+float circlePos_x_center;
+float circlePos_x_amplitude;
+float circlePos_x_period;
+float circlePos_x_phase;
+
+int   circlePos_y_type;
+float circlePos_y_center;
+float circlePos_y_amplitude;
+float circlePos_y_period;
+float circlePos_y_phase;
+
+int   circlePos_z_type;
+float circlePos_z_center;
+float circlePos_z_amplitude;
+float circlePos_z_period;
+float circlePos_z_phase;
+
+//circle rotation
+int   circleRot_x_type;
+float circleRot_x_center;
+float circleRot_x_amplitude;
+float circleRot_x_period;
+float circleRot_x_phase;
+
+int   circleRot_y_type;
+float circleRot_y_center;
+float circleRot_y_amplitude;
+float circleRot_y_period;
+float circleRot_y_phase;
+
+int   circleRot_z_type;
+float circleRot_z_center;
+float circleRot_z_amplitude;
+float circleRot_z_period;
+float circleRot_z_phase;
+
+//circle radius
+int   circleRad_type;
+float circleRad_center;
+float circleRad_amplitude;
+float circleRad_period;
+float circleRad_phase;
+
+//line rotation
+int   lineRot_x_type;
+float lineRot_x_center;
+float lineRot_x_amplitude;
+float lineRot_x_period;
+float lineRot_x_phase;
+
+int   lineRot_y_type;
+float lineRot_y_center;
+float lineRot_y_amplitude;
+float lineRot_y_period;
+float lineRot_y_phase;
+
+int   lineRot_z_type;
+float lineRot_z_center;
+float lineRot_z_amplitude;
+float lineRot_z_period;
+float lineRot_z_phase;
+
+//line length
+int   lineLength_type;
+float lineLength_center;
+float lineLength_amplitude;
+float lineLength_period;
+float lineLength_phase;
+
+//color
+int   colorRange_type;
+float colorRange_center;
+float colorRange_amplitude;
+float colorRange_period;
+float colorRange_phase;
+
+int   colorOffset_type;
+float colorOffset_center;
+float colorOffset_amplitude;
+float colorOffset_period;
+float colorOffset_phase;
+
+float EvaluateAtT(float t, int type, float c, float a, float p, float ph) {
+	//hold still
+	if (type == 0) {
+		return c;
+	}
+	//we need this for lots of stuff
+	float tp = (t / p) + ph;
+
+	//sine wave
+	if (type == 1) {
+		return c + a * sin(tp * 3.1415926535897 * 2.0);
+	}
+	else if (type == 2) {
+		return (abs(4.0 * a * (frac(abs((t / p) + (ph + 0.75))) - 0.5)) - a) + c;
+	}
+	else if (type == 3) {
+		return ((2.0 * a * frac((t / p) + (ph + 0.5))) - a) + c;
+	}
+	else if (type == 4) {
+		return (sign(abs(frac(abs((t / p) + (ph + 0.75))) - 0.5) - 0.25) * a) + c;
+	}
+
+	return c;
+}
+
+[numthreads(256,1,1)]
+void RunSimulation (uint3 tid : SV_GroupThreadID, uint3 gid : SV_GroupID)
+{
+	int idx = tid.x + gid.x * 256;
+	LineCircleSnapshot ThisSnapshot = _SnapshotBuffer[idx];
+	
+	ThisSnapshot.EmitTime = idx;
+	//if snapshot is out of range, just hide it
+	if(ThisSnapshot.EmitTime > _TimeSpan) {
+	    ThisSnapshot.Hidden = 1;
+	    //_SnapshotBuffer[idx] = ThisSnapshot;
+	    //return;
+	} else {
+	    ThisSnapshot.Hidden = -1;
+	}
+
+	float t = ThisSnapshot.EmitTime * _TimeStep + _TimeOffset;
+
+	ThisSnapshot.CirclePosition = float3(
+		EvaluateAtT(t, circlePos_x_type, circlePos_x_center, circlePos_x_amplitude, circlePos_x_period, circlePos_x_phase),
+		EvaluateAtT(t, circlePos_y_type, circlePos_y_center, circlePos_y_amplitude, circlePos_y_period, circlePos_y_phase),
+		EvaluateAtT(t, circlePos_z_type, circlePos_z_center, circlePos_z_amplitude, circlePos_z_period, circlePos_z_phase)
+	);
+	ThisSnapshot.CircleRotation = float3(
+		EvaluateAtT(t, circleRot_x_type, circleRot_x_center, circleRot_x_amplitude, circleRot_x_period, circleRot_x_phase),
+		EvaluateAtT(t, circleRot_y_type, circleRot_y_center, circleRot_y_amplitude, circleRot_y_period, circleRot_y_phase),
+		EvaluateAtT(t, circleRot_z_type, circleRot_z_center, circleRot_z_amplitude, circleRot_z_period, circleRot_z_phase)
+	);
+	ThisSnapshot.CircleRadius = EvaluateAtT(t, circleRad_type, circleRad_center, circleRad_amplitude, circleRad_period, circleRad_phase);
+
+	ThisSnapshot.LineLength = EvaluateAtT(t, lineLength_type, lineLength_center, lineLength_amplitude, lineLength_period, lineLength_phase);
+
+	//optional - scale line length with radius
+	ThisSnapshot.LineLength = ThisSnapshot.LineLength * ThisSnapshot.CircleRadius;
+
+	ThisSnapshot.LineRotation = float3(
+		EvaluateAtT(t, lineRot_x_type, lineRot_x_center, lineRot_x_amplitude, lineRot_x_period, lineRot_x_phase),
+		EvaluateAtT(t, lineRot_y_type, lineRot_y_center, lineRot_y_amplitude, lineRot_y_period, lineRot_y_phase),
+		EvaluateAtT(t, lineRot_z_type, lineRot_z_center, lineRot_z_amplitude, lineRot_z_period, lineRot_z_phase)
+	);
+
+	ThisSnapshot.ColorRange = EvaluateAtT(t, colorRange_type, colorRange_center, colorRange_amplitude, colorRange_period, colorRange_phase);
+	ThisSnapshot.ColorOffset = EvaluateAtT(t, colorOffset_type, colorOffset_center, colorOffset_amplitude, colorOffset_period, colorOffset_phase);
+
+	_SnapshotBuffer[idx] = ThisSnapshot;
+}
+
+//note to self:
+//we want to learn more about groupshared variables, and the function GroupMemoryBarrierWithGroupSync

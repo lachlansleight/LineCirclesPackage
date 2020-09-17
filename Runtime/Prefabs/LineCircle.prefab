@@ -1,0 +1,291 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4172176624687356329
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4172176624687356332}
+  - component: {fileID: 4172176624687356333}
+  - component: {fileID: 4172176624687356334}
+  - component: {fileID: 4172176624687356335}
+  m_Layer: 0
+  m_Name: LineCircle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4172176624687356332
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4172176624687356329}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4172176624687356333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4172176624687356329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f8e6e9ee3fd5554ba56523a66ca8dd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LineCircle: {fileID: 4172176624687356334}
+  StepCount: 1
+  StepOffset: 0
+  OscillateTimespan: 1
+  TimeSpanOscillationPeriod: 10
+  Interval: 1
+  Count: 1
+  Pause: 0
+  MaxTimeLerp: 0
+--- !u!114 &4172176624687356334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4172176624687356329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b02455aeefe913c49afa1e75e5a65f49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SnapshotCompute: {fileID: 7200000, guid: 6fad7e8910e070d4bb8bf954d9c5b41b, type: 3}
+  VertexCompute: {fileID: 7200000, guid: af60a3e2c5b2c974c9951074916b1a4f, type: 3}
+  LineMat: {fileID: 2100000, guid: 9d9a97afa61da7f41b23d29e6cf97ed1, type: 2}
+  FillMat: {fileID: 2100000, guid: d26debdc72edabd4a94a97a7296b3f47, type: 2}
+  Pattern:
+    Count: 200000
+    LineCount: 6
+    SphericalCoordinates: 0
+    LineInterval: 4
+    TimeStep: 0.0211
+    TimeSpan: 0
+    MaxTimePossible: 4220
+    TimeOffset: 0
+    DrawLines: 1
+    DrawFill: 1
+    LineColor: {r: 1, g: 1, b: 1, a: 0.1}
+    FillColor: {r: 1, g: 1, b: 1, a: 0.1}
+    SrcMode: 5
+    DstMode: 10
+    Oscillators:
+    - Name: CirclePosX
+      Type: 1
+      Center: 0
+      Amplitude: 0
+      Period: 1
+      Phase: 0
+    - Name: CirclePosY
+      Type: 1
+      Center: 0
+      Amplitude: 0
+      Period: 6.747362
+      Phase: 0.60534316
+    - Name: CirclePosZ
+      Type: 0
+      Center: 0
+      Amplitude: 0
+      Period: 1
+      Phase: 0
+    - Name: CircleRotX
+      Type: 0
+      Center: 0
+      Amplitude: 0
+      Period: 1
+      Phase: 0
+    - Name: CircleRotY
+      Type: 0
+      Center: 0
+      Amplitude: 0
+      Period: 1
+      Phase: 0
+    - Name: CircleRotZ
+      Type: 3
+      Center: 0
+      Amplitude: 3.1415927
+      Period: 100
+      Phase: 0
+    - Name: CircleRad
+      Type: 0
+      Center: 4.73
+      Amplitude: 1.878965
+      Period: 14.505642
+      Phase: 0.60993296
+    - Name: LineRotX
+      Type: 0
+      Center: 0
+      Amplitude: 0
+      Period: 1
+      Phase: 0
+    - Name: LineRotY
+      Type: 0
+      Center: 0
+      Amplitude: 0
+      Period: 1
+      Phase: 0
+    - Name: LineRotZ
+      Type: 3
+      Center: -0.04572213
+      Amplitude: 3.1415927
+      Period: 2.92
+      Phase: 0
+    - Name: Line Length
+      Type: 1
+      Center: 1.06
+      Amplitude: 0.5
+      Period: 1.5
+      Phase: 0
+    - Name: ColorRange
+      Type: 0
+      Center: 0.65751827
+      Amplitude: 0
+      Period: 1
+      Phase: 0
+    - Name: ColorOffset
+      Type: 0
+      Center: 0.035222888
+      Amplitude: 0
+      Period: 1
+      Phase: 0
+  AlphaMultiplier: 1
+--- !u!114 &4172176624687356335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4172176624687356329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f353642f4baabd0448bbf1f9aea48997, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DoAutoShuffle: 1
+  AcceptsKeyboardInput: 0
+  AutoShufflePeriod: 30
+  FadeoutDuration: 0.05
+  CurrentAutoShuffleTime: 0
+  LC: {fileID: 4172176624687356334}
+  Generator:
+    Count: 0
+    MaxLineCount: 16
+    GlobalShuffleChance: 1
+    SphericalSwapChance: 0.5
+    FreezeChance: 0.3
+    SawtoothChance: 0.5
+    GlobalMinimumFrequency: 0
+    GlobalMaximumFrequency: 0.2
+    RestrictThirdDimension: 1
+    Shufflers:
+    - Name: Circle Pos X
+      AbsoluteMin: -5
+      AbsoluteMax: 5
+      MaxChangePerSecond: 1
+      OverrideFrequency: 0
+      OverrideMinFrequency: 0
+      OverrideMaxFrequency: 0
+    - Name: Circle Pos Y
+      AbsoluteMin: -5
+      AbsoluteMax: 5
+      MaxChangePerSecond: 1
+      OverrideFrequency: 0
+      OverrideMinFrequency: 0
+      OverrideMaxFrequency: 0
+    - Name: Circle Pos Z
+      AbsoluteMin: -5
+      AbsoluteMax: 5
+      MaxChangePerSecond: 1
+      OverrideFrequency: 0
+      OverrideMinFrequency: 0
+      OverrideMaxFrequency: 0
+    - Name: Circle Rot X
+      AbsoluteMin: -3
+      AbsoluteMax: 3
+      MaxChangePerSecond: 1
+      OverrideFrequency: 0
+      OverrideMinFrequency: 0
+      OverrideMaxFrequency: 0
+    - Name: Circle Rot Y
+      AbsoluteMin: -3
+      AbsoluteMax: 3
+      MaxChangePerSecond: 1
+      OverrideFrequency: 0
+      OverrideMinFrequency: 0
+      OverrideMaxFrequency: 0
+    - Name: Circle Rot Z
+      AbsoluteMin: -3
+      AbsoluteMax: 3
+      MaxChangePerSecond: 1
+      OverrideFrequency: 0
+      OverrideMinFrequency: 0
+      OverrideMaxFrequency: 0
+    - Name: Circle Rad
+      AbsoluteMin: 0.1
+      AbsoluteMax: 5
+      MaxChangePerSecond: 1
+      OverrideFrequency: 0
+      OverrideMinFrequency: 0
+      OverrideMaxFrequency: 0
+    - Name: Line Offset X
+      AbsoluteMin: -3
+      AbsoluteMax: 3
+      MaxChangePerSecond: 1
+      OverrideFrequency: 0
+      OverrideMinFrequency: 0
+      OverrideMaxFrequency: 0
+    - Name: Line Offset Y
+      AbsoluteMin: -3
+      AbsoluteMax: 3
+      MaxChangePerSecond: 1
+      OverrideFrequency: 0
+      OverrideMinFrequency: 0
+      OverrideMaxFrequency: 0
+    - Name: Line Offset Z
+      AbsoluteMin: -3
+      AbsoluteMax: 3
+      MaxChangePerSecond: 1
+      OverrideFrequency: 0
+      OverrideMinFrequency: 0
+      OverrideMaxFrequency: 0
+    - Name: Line Length
+      AbsoluteMin: 1
+      AbsoluteMax: 1
+      MaxChangePerSecond: 0
+      OverrideFrequency: 0
+      OverrideMinFrequency: 0
+      OverrideMaxFrequency: 0
+    - Name: Color Range
+      AbsoluteMin: 0
+      AbsoluteMax: 1
+      MaxChangePerSecond: 1
+      OverrideFrequency: 0
+      OverrideMinFrequency: 0
+      OverrideMaxFrequency: 0
+    - Name: Color Offset
+      AbsoluteMin: 0
+      AbsoluteMax: 1
+      MaxChangePerSecond: 1
+      OverrideFrequency: 0
+      OverrideMinFrequency: 0
+      OverrideMaxFrequency: 0
+  Memory:
+    Patterns: []
+    CurrentPosition: 0
+  StartTimeSpan: 0
