@@ -37,19 +37,12 @@ namespace LineCircles
 		[Tooltip("Percentage of auto shuffle time (at each end) the line circle will fade out / in during")]
 		public float FadeoutDuration = 0.05f;
 
-		[Range(0f, 1f)]
 		/// <summary>
 		/// Current position in auto-shuffle period
 		/// </summary>
+		[Range(0f, 1f)]
 		[Tooltip("Current position in auto-shuffle period")]
 		public float CurrentAutoShuffleTime = 0f;
-
-		/// <summary>
-		/// The target LineCircle object to be shuffled
-		/// </summary>
-		[Header("References")]
-		[Tooltip("The target LineCircle object to be shuffled")]
-		public LineCircle LC;
 
 		/// <summary>
 		/// The Pattern Generator used to generate...patterns...
@@ -66,7 +59,14 @@ namespace LineCircles
 		[Header("Debug")]
 		public float StartTimeSpan = 0f;
 
-		private void Start()
+		/// <summary>
+		/// The target LineCircle object to be shuffled
+		/// </summary>
+		[Header("References")]
+		[Tooltip("The target LineCircle object to be shuffled")]
+		private LineCircle _lineCircle;
+
+		private void Awake()
 		{
 			Generator.Count = Mathf.CeilToInt(AutoShufflePeriod * 100f);
 
@@ -74,8 +74,16 @@ namespace LineCircles
 			Memory.Patterns.Add(Generator.GenerateNewPattern());
 			Memory.CurrentPosition = Memory.Patterns.Count - 1;
 
-			LC.Pattern = new LineCirclePattern(Memory.Patterns[Memory.CurrentPosition]);
-			LC.Pattern.TimeSpan = StartTimeSpan;
+			_lineCircle = GetComponent<LineCircle>();
+			if (_lineCircle == null) {
+				Debug.LogError("Shuffler couldn't find an attached LineCircle component! Disabling.");
+				enabled = false;
+				return;
+			}
+
+			_lineCircle.Pattern = new LineCirclePattern(Memory.Patterns[Memory.CurrentPosition]) {
+				TimeSpan = StartTimeSpan
+			};
 		}
 
 		private void Update()
@@ -91,18 +99,19 @@ namespace LineCircles
 			}
 
 			//And shuffle automatically if it's turned on and time
-			if (DoAutoShuffle) {
-				CurrentAutoShuffleTime += Time.deltaTime / AutoShufflePeriod;
-				if (CurrentAutoShuffleTime < FadeoutDuration) {
-					LC.AlphaMultiplier = Mathf.Clamp01(CurrentAutoShuffleTime / FadeoutDuration);
-				} else if (CurrentAutoShuffleTime > 1f - FadeoutDuration) {
-					LC.AlphaMultiplier = Mathf.Clamp01((1f - CurrentAutoShuffleTime) / FadeoutDuration);
-				} else {
-					LC.AlphaMultiplier = 1f;
-				}
-				if (CurrentAutoShuffleTime >= 1f) {
-					GetNewPattern();
-				}
+			if (!DoAutoShuffle) return;
+			
+			CurrentAutoShuffleTime += Time.deltaTime / AutoShufflePeriod;
+			if (CurrentAutoShuffleTime < FadeoutDuration) {
+				_lineCircle.AlphaMultiplier = Mathf.Clamp01(CurrentAutoShuffleTime / FadeoutDuration);
+			} else if (CurrentAutoShuffleTime > 1f - FadeoutDuration) {
+				_lineCircle.AlphaMultiplier = Mathf.Clamp01((1f - CurrentAutoShuffleTime) / FadeoutDuration);
+			} else {
+				_lineCircle.AlphaMultiplier = 1f;
+			}
+			
+			if (CurrentAutoShuffleTime >= 1f) {
+				GetNewPattern();
 			}
 		}
 
@@ -111,8 +120,8 @@ namespace LineCircles
 			if (Memory.CurrentPosition < (Memory.Patterns.Count - 1)) {
 				Memory.CurrentPosition++;
 
-				LC.SetPattern(new LineCirclePattern(Memory.Patterns[Memory.CurrentPosition]));
-				LC.Pattern.TimeSpan = StartTimeSpan;
+				_lineCircle.SetPattern(new LineCirclePattern(Memory.Patterns[Memory.CurrentPosition]));
+				_lineCircle.Pattern.TimeSpan = StartTimeSpan;
 
 				CurrentAutoShuffleTime = 0f;
 				//or generate a new pattern if we're already at the end
@@ -123,14 +132,14 @@ namespace LineCircles
 
 		public void PreviousPattern()
 		{
-			if (Memory.CurrentPosition > 0) {
-				Memory.CurrentPosition--;
+			if (Memory.CurrentPosition <= 0) return;
+			
+			Memory.CurrentPosition--;
 
-				LC.SetPattern(new LineCirclePattern(Memory.Patterns[Memory.CurrentPosition]));
-				LC.Pattern.TimeSpan = StartTimeSpan;
+			_lineCircle.SetPattern(new LineCirclePattern(Memory.Patterns[Memory.CurrentPosition]));
+			_lineCircle.Pattern.TimeSpan = StartTimeSpan;
 
-				CurrentAutoShuffleTime = 0f;
-			}
+			CurrentAutoShuffleTime = 0f;
 		}
 
 		private void GetNewPattern()
@@ -138,8 +147,8 @@ namespace LineCircles
 			Memory.Patterns.Add(Generator.GenerateNewPattern());
 			Memory.CurrentPosition = Memory.Patterns.Count - 1;
 
-			LC.SetPattern(new LineCirclePattern(Memory.Patterns[Memory.CurrentPosition]));
-			LC.Pattern.TimeSpan = StartTimeSpan;
+			_lineCircle.SetPattern(new LineCirclePattern(Memory.Patterns[Memory.CurrentPosition]));
+			_lineCircle.Pattern.TimeSpan = StartTimeSpan;
 
 			CurrentAutoShuffleTime = 0f;
 		}

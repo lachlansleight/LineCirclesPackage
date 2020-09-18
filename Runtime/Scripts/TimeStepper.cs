@@ -8,14 +8,15 @@ namespace LineCircles
 	/// <summary>
 	/// Updates LineCircle time offset without moving lines
 	/// </summary>
+	[RequireComponent(typeof(LineCircle))]
 	public class TimeStepper : MonoBehaviour
 	{
 
 		//target line circle
-		public LineCircle LineCircle;
+		private LineCircle _lineCircle;
 
 		//time offset
-		private float t;
+		private float _t;
 
 		/// <summary>
 		/// Whether to step through the number of drawn time steps
@@ -65,62 +66,67 @@ namespace LineCircles
 
 		[Range(0f, 1f)] public float MaxTimeLerp = 0f;
 
+		private bool _hasShuffler;
 		private Shuffler _shuffler;
 
 		public void Awake()
 		{
-			if (LineCircle == null) {
-				this.enabled = false;
+			_lineCircle = GetComponent<LineCircle>();
+			if (_lineCircle == null) {
+				Debug.LogError("TimeStepper couldn't find an attached LineCircle component! Disabling.");
+				enabled = false;
 				return;
 			}
-			
-			//make sure we have a line circle
-			if (LineCircle == null) {
-				LineCircle = GameObject.FindObjectOfType<LineCircle>();
-			}
-			LineCircle.OnPatternChanged += HandleNewPattern;
+			_lineCircle.OnPatternChanged += HandleNewPattern;
+
+			_shuffler = GetComponent<Shuffler>();
+			_hasShuffler = _shuffler != null;
 		}
 		
 		void Update()
 		{
-			if (LineCircle == null) return;
+			if (_lineCircle == null) return;
 
 			//every [interval] frames...
-			if (Time.frameCount % Interval == 0 && !Pause) {
-				if (OscillateTimespan) {
-					_timeSpanOscillationT += Time.deltaTime * 2f * Mathf.PI / TimeSpanOscillationPeriod;
+			if (Time.frameCount % Interval != 0 || Pause) return;
+			
+			if (OscillateTimespan) {
+				_timeSpanOscillationT += Time.deltaTime * 2f * Mathf.PI / TimeSpanOscillationPeriod;
 
-					var lastFrontEdge = LineCircle.Pattern.TimeSpan + LineCircle.Pattern.TimeOffset;
-					var oscillationLerp = 0.5f - 0.5f * Mathf.Cos(_timeSpanOscillationT);
-					
-					LineCircle.Pattern.TimeSpan = Mathf.Lerp(
-						Mathf.Lerp(0f, LineCircle.Pattern.MaxTimePossible, MaxTimeLerp),
-						LineCircle.Pattern.MaxTimePossible,
-						oscillationLerp);
-					if (_timeSpanOscillationT >= Mathf.PI * 2f) {
-						if (_shuffler == null) _shuffler = GetComponent<Shuffler>();
-						_shuffler.NextPattern();
-					}
-					LineCircle.Pattern.TimeSpan -= LineCircle.Pattern.TimeSpan % LineCircle.Pattern.TimeStep;
-					var desiredFrontEdge = lastFrontEdge + LineCircle.Pattern.TimeStep * Count;
-					if(!float.IsNaN(desiredFrontEdge) && !float.IsNaN(LineCircle.Pattern.TimeSpan)) LineCircle.Pattern.TimeOffset = desiredFrontEdge - LineCircle.Pattern.TimeSpan;
-					//LineCircle.Pattern.TimeOffset += LineCircle.Pattern.TimeStep * Count; //increase time offset
+				var lastFrontEdge = _lineCircle.Pattern.TimeSpan + _lineCircle.Pattern.TimeOffset;
+				var oscillationLerp = 0.5f - 0.5f * Mathf.Cos(_timeSpanOscillationT);
+				
+				//Update Timespan
+				_lineCircle.Pattern.TimeSpan = Mathf.Lerp(
+					Mathf.Lerp(0f, _lineCircle.Pattern.MaxTimePossible, MaxTimeLerp),
+					_lineCircle.Pattern.MaxTimePossible,
+					oscillationLerp);
+				
+				//If we've finished an oscillation period, shuffle to the next pattern
+				if (_timeSpanOscillationT >= Mathf.PI * 2f) {
+					if(_hasShuffler) _shuffler.NextPattern();
+				}
+				
+				//Ensure that the front-facing edge is exactly on a line
+				_lineCircle.Pattern.TimeSpan -= _lineCircle.Pattern.TimeSpan % _lineCircle.Pattern.TimeStep;
+				var desiredFrontEdge = lastFrontEdge + _lineCircle.Pattern.TimeStep * Count;
+				if(!float.IsNaN(desiredFrontEdge) && !float.IsNaN(_lineCircle.Pattern.TimeSpan)) _lineCircle.Pattern.TimeOffset = desiredFrontEdge - _lineCircle.Pattern.TimeSpan;
+				//LineCircle.Pattern.TimeOffset += LineCircle.Pattern.TimeStep * Count; //increase time offset
+			} else {
+				if (StepOffset) _lineCircle.Pattern.TimeOffset += _lineCircle.Pattern.TimeStep * Count;
+
+				//increase draw count
+				if (!StepCount) return;
+				
+				if (_lineCircle.Pattern.TimeSpan >= _lineCircle.Pattern.MaxTimePossible) {
+					_lineCircle.Pattern.TimeSpan = _lineCircle.Pattern.MaxTimePossible;
+					_lineCircle.Pattern.TimeOffset += _lineCircle.Pattern.TimeStep * Count;
 				} else {
-					if (StepOffset) LineCircle.Pattern.TimeOffset += LineCircle.Pattern.TimeStep * Count;
-
-					//increase draw count
-					if (StepCount) {
-						if (LineCircle.Pattern.TimeSpan >= LineCircle.Pattern.MaxTimePossible) {
-							LineCircle.Pattern.TimeSpan = LineCircle.Pattern.MaxTimePossible;
-							LineCircle.Pattern.TimeOffset += LineCircle.Pattern.TimeStep * Count;
-						} else {
-							LineCircle.Pattern.TimeSpan += LineCircle.Pattern.TimeStep * Count;
-						}
-					}
+					_lineCircle.Pattern.TimeSpan += _lineCircle.Pattern.TimeStep * Count;
 				}
 			}
-			
-			
+
+
 		}
 
 		private void HandleNewPattern(object sender, EventArgs e)

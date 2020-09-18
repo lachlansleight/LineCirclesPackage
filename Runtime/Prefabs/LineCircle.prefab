@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4172176624687356332}
-  - component: {fileID: 4172176624687356333}
   - component: {fileID: 4172176624687356334}
+  - component: {fileID: 4172176624687356333}
   - component: {fileID: 4172176624687356335}
   m_Layer: 0
   m_Name: LineCircle
@@ -33,27 +33,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4172176624687356333
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4172176624687356329}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9f8e6e9ee3fd5554ba56523a66ca8dd3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  LineCircle: {fileID: 4172176624687356334}
-  StepCount: 1
-  StepOffset: 0
-  OscillateTimespan: 1
-  TimeSpanOscillationPeriod: 10
-  Interval: 1
-  Count: 1
-  Pause: 0
-  MaxTimeLerp: 0
 --- !u!114 &4172176624687356334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,10 +45,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b02455aeefe913c49afa1e75e5a65f49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SnapshotCompute: {fileID: 7200000, guid: 6fad7e8910e070d4bb8bf954d9c5b41b, type: 3}
-  VertexCompute: {fileID: 7200000, guid: af60a3e2c5b2c974c9951074916b1a4f, type: 3}
-  LineMat: {fileID: 2100000, guid: 9d9a97afa61da7f41b23d29e6cf97ed1, type: 2}
-  FillMat: {fileID: 2100000, guid: d26debdc72edabd4a94a97a7296b3f47, type: 2}
   Pattern:
     Count: 200000
     LineCount: 6
@@ -165,6 +140,27 @@ MonoBehaviour:
       Period: 1
       Phase: 0
   AlphaMultiplier: 1
+--- !u!114 &4172176624687356333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4172176624687356329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f8e6e9ee3fd5554ba56523a66ca8dd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LineCircle: {fileID: 4172176624687356334}
+  StepCount: 1
+  StepOffset: 0
+  OscillateTimespan: 1
+  TimeSpanOscillationPeriod: 10
+  Interval: 1
+  Count: 1
+  Pause: 0
+  MaxTimeLerp: 0
 --- !u!114 &4172176624687356335
 MonoBehaviour:
   m_ObjectHideFlags: 0

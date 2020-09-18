@@ -4,10 +4,10 @@ using UnityEngine;
 
 namespace LineCircles
 {
-	[System.Serializable]
 	/// <summary>
 	/// Oscillates a value using an envelope function
 	/// </summary>
+	[System.Serializable]
 	public class Oscillator
 	{
 

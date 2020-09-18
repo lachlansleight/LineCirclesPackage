@@ -11,30 +11,6 @@ namespace LineCircles
 	public class LineCircle : MonoBehaviour
 	{
 		/// <summary>
-		/// Compute shader running the simulation
-		/// </summary>
-		[Header("Materials")]
-		[Tooltip("Compute shader running the simulation")]
-		public ComputeShader SnapshotCompute;
-
-		/// <summary>
-		/// Compute shader creating the meshes
-		/// </summary>
-		public ComputeShader VertexCompute;
-
-		/// <summary>
-		/// Material displaying the lines
-		/// </summary>
-		[Tooltip("Material displaying the lines")]
-		public Material LineMat;
-
-		/// <summary>
-		/// Material displaying the fill
-		/// </summary>
-		[Tooltip("Material displaying the fill")]
-		public Material FillMat;
-
-		/// <summary>
 		/// Compute Buffer containing time snapshots in GPU
 		/// </summary>
 		private ComputeBuffer _snapshotBuffer;
@@ -64,7 +40,6 @@ namespace LineCircles
 		/// <summary>
 		/// Parameters controlling simulation visuals
 		/// </summary>
-		[Space(20)]
 		[Tooltip("Parameters controlling simulation visuals")]
 		public LineCirclePattern Pattern;
 
@@ -79,7 +54,7 @@ namespace LineCircles
 		private float _minZ;
 		private float _maxZ;
 
-		public float AlphaMultiplier;
+		[HideInInspector] public float AlphaMultiplier;
 
 		public EventHandler OnPatternChanged;
 		
@@ -94,10 +69,10 @@ namespace LineCircles
 		private void SetupEverything()
 		{
 			//this allows us to have more than one LineCircle in the same scene
-			_snapshotCompute = Instantiate(SnapshotCompute);
-			_vertexCompute = Instantiate(VertexCompute);
-			_lineMat = Instantiate(LineMat);
-			_fillMat = Instantiate(FillMat);
+			_snapshotCompute = Instantiate(Resources.Load<ComputeShader>("ComputeShaders/SnapshotCompute"));
+			_vertexCompute = Instantiate(Resources.Load<ComputeShader>("ComputeShaders/VertexCompute"));
+			_lineMat = Instantiate(Resources.Load<Material>("Materials/LineCircles_Lines"));
+			_fillMat = Instantiate(Resources.Load<Material>("Materials/LineCircles_Fill"));
 
 			_vertexBuffer = new ComputeBuffer(Pattern.Count, sizeof(float) * 4 * 2);
 			_vertexBuffer.SetData(new LineCircleVertex[Pattern.Count]);
