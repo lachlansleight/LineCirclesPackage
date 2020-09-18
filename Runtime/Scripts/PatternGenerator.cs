@@ -344,13 +344,13 @@ namespace LineCircles
 				pattern.Oscillators[index].Amplitude = 0;
 			} else {
 				Shufflers[index].RandomiseRange(ref pattern.Oscillators[index]);
-				Shufflers[index].RandomisePhase(ref pattern.Oscillators[index]);
+				OscillatorShuffler.RandomisePhase(ref pattern.Oscillators[index]);
 
 				//check whether we should use override frequency values
 				if (Shufflers[index].OverrideFrequency)
 					Shufflers[index].RandomiseFrequency(ref pattern.Oscillators[index]);
 				else
-					Shufflers[index].RandomiseFrequency(ref pattern.Oscillators[index], 
+					OscillatorShuffler.RandomiseFrequency(ref pattern.Oscillators[index], 
 						GlobalMinimumFrequency, GlobalMaximumFrequency);
 			}
 
@@ -375,7 +375,7 @@ namespace LineCircles
 			//if sawtooth, make sure we go from 0 to 2 pi (so one full revolution)
 			if (pattern.Oscillators[index].Type != OscillatorShape.Sawtooth) return;
 			
-			Shufflers[index].EnforceTwoPi(ref pattern.Oscillators[index]);
+			OscillatorShuffler.EnforceTwoPi(ref pattern.Oscillators[index]);
 			Shufflers[index].EnforceMaxFrequency(ref pattern.Oscillators[index]);
 		}
 
