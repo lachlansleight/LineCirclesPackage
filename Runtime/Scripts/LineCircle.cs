@@ -228,10 +228,12 @@ namespace LineCircles
 			//multiplied by cos(45°) x sphere diameter...multiplied by 0.8 just in case!
 			
 
-			Graphics.DrawMeshInstancedIndirect(_fillMesh, 0, _fillMat, new Bounds(Vector3.zero, Vector3.one * 100f),
-				_fillArgsBuffer);
-			Graphics.DrawMeshInstancedIndirect(_lineMesh, 0, _lineMat, new Bounds(Vector3.zero, Vector3.one * 100f),
-				_lineArgsBuffer);
+			if(Pattern.DrawFill)
+				Graphics.DrawMeshInstancedIndirect(_fillMesh, 0, _fillMat, new Bounds(Vector3.zero, Vector3.one * 100f),
+					_fillArgsBuffer);
+			if(Pattern.DrawLines)
+				Graphics.DrawMeshInstancedIndirect(_lineMesh, 0, _lineMat, new Bounds(Vector3.zero, Vector3.one * 100f),
+					_lineArgsBuffer);
 		}
 
 		/// <summary>
