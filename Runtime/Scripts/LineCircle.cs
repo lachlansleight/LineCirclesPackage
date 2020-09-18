@@ -53,6 +53,7 @@ namespace LineCircles
 		private float _maxY;
 		private float _minZ;
 		private float _maxZ;
+		private int _setCount;
 
 		[HideInInspector] public float AlphaMultiplier;
 
@@ -60,6 +61,8 @@ namespace LineCircles
 		
 		private void Awake()
 		{
+			//make sure we clear everything in case some other component already set up buffers and stuff
+			ClearEverything();
 			SetupEverything();
 		}
 
@@ -74,8 +77,8 @@ namespace LineCircles
 			_lineMat = Instantiate(Resources.Load<Material>("Materials/LineCircles_Lines"));
 			_fillMat = Instantiate(Resources.Load<Material>("Materials/LineCircles_Fill"));
 
-			_vertexBuffer = new ComputeBuffer(Pattern.Count, sizeof(float) * 4 * 2);
-			_vertexBuffer.SetData(new LineCircleVertex[Pattern.Count]);
+			_vertexBuffer = new ComputeBuffer(Pattern.Count * Pattern.LineCount * 6, sizeof(float) * 4 * 2);
+			_vertexBuffer.SetData(new LineCircleVertex[Pattern.Count * Pattern.LineCount * 6]);
 			_vertexCompute.SetBuffer(0, "_VertexBuffer", _vertexBuffer);
 			_lineMat.SetBuffer("_VertexBuffer", _vertexBuffer);
 			_fillMat.SetBuffer("_VertexBuffer", _vertexBuffer);
@@ -86,6 +89,8 @@ namespace LineCircles
 			_vertexCompute.SetBuffer(0, "_SnapshotBuffer", _snapshotBuffer);
 			_lineMat.SetBuffer("_SnapshotBuffer", _snapshotBuffer);
 			_fillMat.SetBuffer("_SnapshotBuffer", _snapshotBuffer);
+
+			_setCount = Pattern.Count;
 
 			//72 = 6 x 12, where 12 is the maximum line count for a pattern
 			//multiplied by two to get the two bounding edges
@@ -108,29 +113,23 @@ namespace LineCircles
 
 		private void ClearEverything()
 		{
-			if (_snapshotCompute != null) Destroy(_snapshotCompute);
-			if (_vertexCompute != null) Destroy(_vertexCompute);
+			_snapshotBuffer?.Release();
+			_vertexBuffer?.Release();
+			_fillArgsBuffer?.Release();
+			_lineArgsBuffer?.Release();
+			_latestVerticesBuffer?.Release();
+
 			if (_lineMat != null) Destroy(_lineMat);
 			if (_fillMat != null) Destroy(_fillMat);
+
+			if (_snapshotCompute != null) Destroy(_snapshotCompute);
+			if (_vertexCompute != null) Destroy(_vertexCompute);
 		}
 
 		//make sure we dispose safely
 		private void OnDestroy()
 		{
-			_snapshotBuffer.Release();
-			_vertexBuffer.Release();
-			_fillArgsBuffer.Release();
-			_lineArgsBuffer.Release();
-			_latestVerticesBuffer.Release();
-
-			Destroy(_lineMesh);
-			Destroy(_fillMesh);
-
-			Destroy(_fillMat);
-			Destroy(_lineMat);
-
-			Destroy(_snapshotCompute);
-			Destroy(_vertexCompute);
+			ClearEverything();
 		}
 
 		private void Update()
@@ -150,7 +149,8 @@ namespace LineCircles
 					"New pattern count must be greater than zero");
 			}
 
-			Pattern.Count = newCount;
+			if (newCount <= _setCount) return;
+			
 			ClearEverything();
 			SetupEverything();
 		}
@@ -360,6 +360,9 @@ namespace LineCircles
 			ResetBounds();
 			OnPatternChanged?.Invoke(this, new EventArgs());
 			_maxPossibleBounds = Pattern.GetMaxPossibleBounds();
+			if (pattern.Count != _setCount) {
+				SetCount(pattern.Count);
+			}
 		}
 	}
 }

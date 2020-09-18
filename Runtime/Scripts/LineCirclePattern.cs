@@ -4,18 +4,17 @@ using UnityEngine;
 
 namespace LineCircles
 {
-
-	[System.Serializable]
 	/// <summary>
 	/// Complete list of settings necessary to replicate a Line Circle visual pattern
 	/// </summary>
+	[System.Serializable]
 	public class LineCirclePattern
 	{
-
-		[Header("Settings")]
+		
 		/// <summary>
 		/// The number of independent time steps
 		/// </summary>
+		[Header("Settings")]
 		[Range(1, 10000)]
 		[Tooltip("The number of independent time steps")]
 		public int Count = 1000;
@@ -23,7 +22,7 @@ namespace LineCircles
 		/// <summary>
 		/// The number of lines distributed around the circle
 		/// </summary>
-		[Range(1, 12)]
+		[Range(1, 16)]
 		[Tooltip("The number of lines distributed around the circle")]
 		public int LineCount = 12;
 
@@ -40,11 +39,11 @@ namespace LineCircles
 		[Range(1, 20)]
 		public int LineInterval = 4;
 
-		[Space(10)]
 
 		/// <summary>
 		/// Time in seconds to advance every time snapshot of the pattern
 		/// </summary>
+		[Space(10)]
 		[Tooltip("Time in seconds to advance every time snapshot of the pattern")]
 		[Range(0.001f, 0.1f)]
 		public float TimeStep = 0.1f;
@@ -63,12 +62,10 @@ namespace LineCircles
 		[Tooltip("Offset time in seconds of beginning of the pattern")]
 		public float TimeOffset = 0;
 
-
-		[Space(10)]
-
 		/// <summary>
 		/// Whether to display lines
 		/// </summary>
+		[Space(10)]
 		[Tooltip("Whether to display lines")]
 		public bool DrawLines;
 

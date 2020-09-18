@@ -66,7 +66,7 @@ namespace LineCircles
 		[Tooltip("The target LineCircle object to be shuffled")]
 		private LineCircle _lineCircle;
 
-		private void Awake()
+		private void OnEnable()
 		{
 			Generator.Count = Mathf.CeilToInt(AutoShufflePeriod * 100f);
 
@@ -81,9 +81,9 @@ namespace LineCircles
 				return;
 			}
 
-			_lineCircle.Pattern = new LineCirclePattern(Memory.Patterns[Memory.CurrentPosition]) {
+			_lineCircle.SetPattern(new LineCirclePattern(Memory.Patterns[Memory.CurrentPosition]) {
 				TimeSpan = StartTimeSpan
-			};
+			});
 		}
 
 		private void Update()

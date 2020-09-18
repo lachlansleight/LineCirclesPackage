@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Pattern:
-    Count: 200000
+    Count: 5000
     LineCount: 6
     SphericalCoordinates: 0
     LineInterval: 4
@@ -152,11 +152,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f8e6e9ee3fd5554ba56523a66ca8dd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LineCircle: {fileID: 4172176624687356334}
   StepCount: 1
   StepOffset: 0
   OscillateTimespan: 1
-  TimeSpanOscillationPeriod: 10
+  TimeSpanOscillationPeriod: 30
   Interval: 1
   Count: 1
   Pause: 0
@@ -178,7 +177,6 @@ MonoBehaviour:
   AutoShufflePeriod: 30
   FadeoutDuration: 0.05
   CurrentAutoShuffleTime: 0
-  LC: {fileID: 4172176624687356334}
   Generator:
     Count: 0
     MaxLineCount: 16

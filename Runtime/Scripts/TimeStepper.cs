@@ -40,7 +40,7 @@ namespace LineCircles
 		/// Duration of time span oscillations
 		/// </summary>
 		[Tooltip("Duration of time span oscillations")]
-		[Range(1f, 60f)] public float TimeSpanOscillationPeriod = 10f;
+		[Range(1f, 60f)] public float TimeSpanOscillationPeriod = 30f;
 
 		/// <summary>
 		/// Increase count every [n] frames
@@ -69,7 +69,7 @@ namespace LineCircles
 		private bool _hasShuffler;
 		private Shuffler _shuffler;
 
-		public void Awake()
+		public void OnEnable()
 		{
 			_lineCircle = GetComponent<LineCircle>();
 			if (_lineCircle == null) {
