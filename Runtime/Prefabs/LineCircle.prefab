@@ -266,7 +266,7 @@ MonoBehaviour:
       OverrideMinFrequency: 0
       OverrideMaxFrequency: 0
     - Name: Color Range
-      AbsoluteMin: 0
+      AbsoluteMin: 0.1
       AbsoluteMax: 1
       MaxChangePerSecond: 1
       OverrideFrequency: 0

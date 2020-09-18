@@ -294,12 +294,12 @@ namespace LineCircles
 			//mmm...rainbow mess
 			if (Roll(GlobalShuffleChance)) {
 				NewPattern.Oscillators[ID.ColorRange].Amplitude = 0f;
-				NewPattern.Oscillators[ID.ColorRange].Center = Random.Range(0f, 1f);
+				Shufflers[ID.ColorRange].RandomiseCenter(ref NewPattern.Oscillators[ID.ColorRange]);
 			}
 
 			if (Roll(GlobalShuffleChance)) {
 				NewPattern.Oscillators[ID.ColorOffset].Amplitude = 0f;
-				NewPattern.Oscillators[ID.ColorOffset].Center = Random.Range(0f, 1f);
+				Shufflers[ID.ColorOffset].RandomiseCenter(ref NewPattern.Oscillators[ID.ColorOffset]);
 			}
 
 			//Shuffle line count
