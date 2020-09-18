@@ -247,46 +247,51 @@ namespace LineCircles
 			var circleMin = Vector3.zero;
 			var circleMax = Vector3.zero;
 			if (SphericalCoordinates) {
-				var min = -Oscillators[ID.CirclePosX].Center * Vector3.one;
-				var max = Oscillators[ID.CirclePosX].Center * Vector3.one;
+				//In spherical coordinates, we only care about the circle position radius
+				//We can't make any assumptions about angles, so we just assume that it'll hit the spherical limits
+				//in all directions
+				circleMin = -Mathf.Abs(Oscillators[ID.CirclePosX].Center) * Vector3.one;
+				circleMax = Mathf.Abs(Oscillators[ID.CirclePosX].Center) * Vector3.one;
+				
 				if (Oscillators[ID.CirclePosX].Type != OscillatorShape.Constant) {
-					min -= Oscillators[ID.CirclePosX].Amplitude * Vector3.one;
-					max += Oscillators[ID.CirclePosX].Amplitude * Vector3.one;
+					circleMin -= Mathf.Abs(Oscillators[ID.CirclePosX].Amplitude) * Vector3.one;
+					circleMax += Mathf.Abs(Oscillators[ID.CirclePosX].Amplitude) * Vector3.one;
 				}
 			} else {
+				//In cartesian coordinates, we can use each oscillator to determine min and max values for each axis
 				circleMin.x = Oscillators[ID.CirclePosX].Center;
 				circleMax.x = Oscillators[ID.CirclePosX].Center;
 				if (Oscillators[ID.CirclePosX].Type != OscillatorShape.Constant) {
-					circleMin.x -= Oscillators[ID.CirclePosX].Amplitude;
-					circleMax.x += Oscillators[ID.CirclePosX].Amplitude;
+					circleMin.x -= Mathf.Abs(Oscillators[ID.CirclePosX].Amplitude);
+					circleMax.x += Mathf.Abs(Oscillators[ID.CirclePosX].Amplitude);
 				}
 				
 				circleMin.y = Oscillators[ID.CirclePosY].Center;
 				circleMax.y = Oscillators[ID.CirclePosY].Center;
 				if (Oscillators[ID.CirclePosY].Type != OscillatorShape.Constant) {
-					circleMin.y -= Oscillators[ID.CirclePosY].Amplitude;
-					circleMax.y += Oscillators[ID.CirclePosY].Amplitude;
+					circleMin.y -= Mathf.Abs(Oscillators[ID.CirclePosY].Amplitude);
+					circleMax.y += Mathf.Abs(Oscillators[ID.CirclePosY].Amplitude);
 				}
 				
 				circleMin.z = Oscillators[ID.CirclePosZ].Center;
 				circleMax.z = Oscillators[ID.CirclePosZ].Center;
 				if (Oscillators[ID.CirclePosZ].Type != OscillatorShape.Constant) {
-					circleMin.z -= Oscillators[ID.CirclePosZ].Amplitude;
-					circleMax.z += Oscillators[ID.CirclePosZ].Amplitude;
+					circleMin.z -= Mathf.Abs(Oscillators[ID.CirclePosZ].Amplitude);
+					circleMax.z += Mathf.Abs(Oscillators[ID.CirclePosZ].Amplitude);
 				}
 			}
 
 			//get max circle radius
 			var lineExtents = Oscillators[ID.CircleRad].Center;
 			if (Oscillators[ID.CircleRad].Type != OscillatorShape.Constant) {
-				lineExtents += Oscillators[ID.CircleRad].Amplitude;
+				lineExtents += Mathf.Abs(Oscillators[ID.CircleRad].Amplitude);
 			}
 			var maxRad = lineExtents;
 			
 			//get max line length multiplier
 			var maxLine = Oscillators[ID.LineLength].Center;
 			if (Oscillators[ID.LineLength].Type != OscillatorShape.Constant) {
-				maxLine += Oscillators[ID.LineLength].Amplitude;
+				maxLine += Mathf.Abs(Oscillators[ID.LineLength].Amplitude);
 			}
 
 			//combine them to get maximum offset from circle position, radially outwards

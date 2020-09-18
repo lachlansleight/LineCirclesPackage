@@ -358,8 +358,9 @@ namespace LineCircles
 		{
 			Pattern = pattern;
 			ResetBounds();
-			OnPatternChanged?.Invoke(this, new EventArgs());
 			_maxPossibleBounds = Pattern.GetMaxPossibleBounds();
+			
+			OnPatternChanged?.Invoke(this, new EventArgs());
 			if (pattern.Count != _setCount) {
 				SetCount(pattern.Count);
 			}
