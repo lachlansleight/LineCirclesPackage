@@ -11,10 +11,10 @@ namespace LineCircles
 	public class PatternGenerator
 	{
 
-		[Header("Settings")]
 		/// <summary>
 		/// Snapshot count to use in generated patterns
 		/// </summary>
+		[Header("Settings")]
 		[Tooltip("Snapshot count to use in generated patterns")]
 		public int Count;
 		
@@ -43,18 +43,18 @@ namespace LineCircles
 		public float FreezeChance = 0.3f;
 
 		/// <summary>
-		/// The chance that we will set an eligable oscillator to be a sawtooth wave on shuffle
+		/// The chance that we will set an eligible oscillator to be a sawtooth wave on shuffle
 		/// </summary>
-		[Tooltip("The chance that we will set an eligable oscillator to be a sawtooth wave on shuffle")]
+		[Tooltip("The chance that we will set an eligible oscillator to be a sawtooth wave on shuffle")]
 		public float SawtoothChance = 0.5f;
 
 
-		[Space(10)]
 
 
 		/// <summary>
 		/// The minimum frequency for all oscillators
 		/// </summary>
+		[Space(10)]
 		[Tooltip("The minimum frequency for all oscillators")]
 		public float GlobalMinimumFrequency = 0f;
 
@@ -65,12 +65,12 @@ namespace LineCircles
 		public float GlobalMaximumFrequency = 0.2f;
 
 
-		[Space(10)]
 
 
 		/// <summary>
 		/// Whether to disallow any oscillators from moving in the Z dimension (i.e. 2D mode toggle)
 		/// </summary>
+		[Space(10)]
 		[Tooltip("Whether to disallow any oscillators from moving in the Z dimension (i.e. 2D mode toggle)")]
 		public bool RestrictThirdDimension = true;
 
@@ -83,116 +83,123 @@ namespace LineCircles
 		/// <summary>
 		/// Generates a new LineCircle pattern, shuffling parameters of a previous pattern
 		/// </summary>
-		/// <param name="PreviousPattern">Previous pattern to use as shuffle base</param>
+		/// <param name="previousPattern">Previous pattern to use as shuffle base</param>
 		/// <returns>A shuffled version of the previous pattern</returns>
-		public LineCirclePattern GenerateNewPattern(LineCirclePattern PreviousPattern)
+		public LineCirclePattern GenerateNewPattern(LineCirclePattern previousPattern)
 		{
-			LineCirclePattern NewPattern = new LineCirclePattern(PreviousPattern);
+			var newPattern = new LineCirclePattern(previousPattern);
 
 			//first we decide whether we should be spherical or cartesian
 			if (Roll(SphericalSwapChance)) {
-				NewPattern.SphericalCoordinates = true;
+				newPattern.SphericalCoordinates = true;
 
 				//Shuffle X (aka radius)
-				RollShuffler(ID.CirclePosX, ref NewPattern);
+				RollShuffler(ID.CirclePosX, ref newPattern);
 
 				//Shuffle Y (aka theta) if in 3D mode
 				if (!RestrictThirdDimension) {
-					RollShufflerLoopable(ID.CirclePosY, ref NewPattern);
+					RollShufflerLoopable(ID.CirclePosY, ref newPattern);
 				} else {
 					//reset to make sure everything is in 2D
-					string savedname = NewPattern.Oscillators[ID.CirclePosY].Name;
-					NewPattern.Oscillators[ID.CirclePosY] = new Oscillator("CirclePosY", 0, 0, 0, 1, 0);
-					NewPattern.Oscillators[ID.CirclePosY].Name = savedname;
+					var savedName = newPattern.Oscillators[ID.CirclePosY].Name;
+					newPattern.Oscillators[ID.CirclePosY] = new Oscillator("CirclePosY", 0, 0, 0, 1, 0) {
+						Name = savedName
+					};
 				}
 
 				//Shuffle Z (aka phi)
-				RollShufflerLoopable(ID.CirclePosZ, ref NewPattern);
+				RollShufflerLoopable(ID.CirclePosZ, ref newPattern);
 
 			} else {
-				NewPattern.SphericalCoordinates = false;
+				newPattern.SphericalCoordinates = false;
 
 				//Shuffle X and Y
-				RollShuffler(ID.CirclePosX, ref NewPattern);
-				RollShuffler(ID.CirclePosY, ref NewPattern);
+				RollShuffler(ID.CirclePosX, ref newPattern);
+				RollShuffler(ID.CirclePosY, ref newPattern);
 
 				//Shuffle Z if in 3D mode
-				if (!RestrictThirdDimension) RollShuffler(ID.CirclePosZ, ref NewPattern);
+				if (!RestrictThirdDimension) RollShuffler(ID.CirclePosZ, ref newPattern);
 				else {
 					//reset to make sure everything is in 2D
-					string savedname = NewPattern.Oscillators[ID.CirclePosZ].Name;
-					NewPattern.Oscillators[ID.CirclePosZ] = new Oscillator("CirclePosZ", 0, 0, 0, 1, 0);
-					NewPattern.Oscillators[ID.CirclePosZ].Name = savedname;
+					var savedName = newPattern.Oscillators[ID.CirclePosZ].Name;
+					newPattern.Oscillators[ID.CirclePosZ] = new Oscillator("CirclePosZ", 0, 0, 0, 1, 0) {
+						Name = savedName
+					};
 				}
 			}
 
 			//Shuffle rotation about X and Y axes if in 3D mode
 			if (!RestrictThirdDimension) {
-				RollShufflerLoopable(ID.CircleRotX, ref NewPattern);
-				RollShufflerLoopable(ID.CircleRotY, ref NewPattern);
+				RollShufflerLoopable(ID.CircleRotX, ref newPattern);
+				RollShufflerLoopable(ID.CircleRotY, ref newPattern);
 			} else {
 				//reset to make sure everything is in 2D
-				string savedname = NewPattern.Oscillators[ID.CircleRotX].Name;
-				NewPattern.Oscillators[ID.CircleRotX] = new Oscillator("CircleRotX", 0, 0, 0, 1, 0);
-				NewPattern.Oscillators[ID.CircleRotX].Name = savedname;
+				var savedName = newPattern.Oscillators[ID.CircleRotX].Name;
+				newPattern.Oscillators[ID.CircleRotX] = new Oscillator("CircleRotX", 0, 0, 0, 1, 0) {
+					Name = savedName
+				};
 
-				savedname = NewPattern.Oscillators[ID.CircleRotY].Name;
-				NewPattern.Oscillators[ID.CircleRotY] = new Oscillator("CircleRotY", 0, 0, 0, 1, 0);
-				NewPattern.Oscillators[ID.CircleRotY].Name = savedname;
+				savedName = newPattern.Oscillators[ID.CircleRotY].Name;
+				newPattern.Oscillators[ID.CircleRotY] = new Oscillator("CircleRotY", 0, 0, 0, 1, 0) {
+					Name = savedName
+				};
 			}
 
 			//Shuffle rotation about Z axis
-			RollShufflerLoopable(ID.CircleRotZ, ref NewPattern);
+			RollShufflerLoopable(ID.CircleRotZ, ref newPattern);
 
 			//Shuffle radius
-			RollShuffler(ID.CircleRad, ref NewPattern);
+			RollShuffler(ID.CircleRad, ref newPattern);
 
 			//Shuffle offset about X and Y axes if in 3D mode
 			if (!RestrictThirdDimension) {
-				RollShufflerLoopable(ID.LineRotX, ref NewPattern);
-				RollShufflerLoopable(ID.LineRotY, ref NewPattern);
+				RollShufflerLoopable(ID.LineRotX, ref newPattern);
+				RollShufflerLoopable(ID.LineRotY, ref newPattern);
 			} else {
 				//reset to make sure everything is in 2D
-				string savedname = NewPattern.Oscillators[ID.LineRotX].Name;
-				NewPattern.Oscillators[ID.LineRotX] = new Oscillator("LineRotX", 0, 0, 0, 1, 0);
-				NewPattern.Oscillators[ID.LineRotX].Name = savedname;
+				var savedName = newPattern.Oscillators[ID.LineRotX].Name;
+				newPattern.Oscillators[ID.LineRotX] = new Oscillator("LineRotX", 0, 0, 0, 1, 0) {
+					Name = savedName
+				};
 
-				savedname = NewPattern.Oscillators[ID.LineRotY].Name;
-				NewPattern.Oscillators[ID.LineRotY] = new Oscillator("LineRotY", 0, 0, 0, 1, 0);
-				NewPattern.Oscillators[ID.LineRotY].Name = savedname;
+				savedName = newPattern.Oscillators[ID.LineRotY].Name;
+				newPattern.Oscillators[ID.LineRotY] = new Oscillator("LineRotY", 0, 0, 0, 1, 0) {
+					Name = savedName
+				};
 			}
 
 			//Shuffle offset about Z axis
-			RollShufflerLoopable(ID.LineRotZ, ref NewPattern);
+			RollShufflerLoopable(ID.LineRotZ, ref newPattern);
 
 			//custom - line length and colors
 
 			//for line length we only randomise the total length
 			if (Roll(GlobalShuffleChance)) {
-				NewPattern.Oscillators[ID.LineLength] = new Oscillator("LineLength", 0,
-					Random.Range(Shufflers[ID.LineLength].AbsoluteMin, Shufflers[ID.LineLength].AbsoluteMax), 0, 1, 0);
-				NewPattern.Oscillators[ID.LineLength].Name = "Line Length";
+				newPattern.Oscillators[ID.LineLength] = new Oscillator("LineLength", 0,
+					Random.Range(Shufflers[ID.LineLength].AbsoluteMin, Shufflers[ID.LineLength].AbsoluteMax), 0, 1, 0) {
+					Name = "Line Length"
+				};
 			}
 
 
 			//we keep amplitude for both color values at zero because otherwise the pattern is just a rainbow mess
 			//mmm...rainbow mess
 			if (Roll(GlobalShuffleChance)) {
-				NewPattern.Oscillators[ID.ColorRange].Amplitude = 0f;
-				NewPattern.Oscillators[ID.ColorRange].Center = Random.Range(0f, 1f);
+				newPattern.Oscillators[ID.ColorRange].Amplitude = 0f;
+				newPattern.Oscillators[ID.ColorRange].Center = Random.Range(0f, 1f);
 			}
 
 			if (Roll(GlobalShuffleChance)) {
-				NewPattern.Oscillators[ID.ColorOffset].Amplitude = 0f;
-				NewPattern.Oscillators[ID.ColorOffset].Center = Random.Range(0f, 1f);
+				newPattern.Oscillators[ID.ColorOffset].Amplitude = 0f;
+				newPattern.Oscillators[ID.ColorOffset].Center = Random.Range(0f, 1f);
 			}
 
 			//Shuffle line count
 			if (Roll(GlobalShuffleChance)) {
-				NewPattern.LineCount = Random.Range(3, MaxLineCount + 1);
+				newPattern.LineCount = Random.Range(3, MaxLineCount + 1);
 			}
 
-			return NewPattern;
+			return newPattern;
 		}
 
 		/// <summary>
@@ -201,178 +208,185 @@ namespace LineCircles
 		/// <returns>A random LineCircle Pattern</returns>
 		public LineCirclePattern GenerateNewPattern()
 		{
-			LineCirclePattern NewPattern = new LineCirclePattern(Count);
+			var newPattern = new LineCirclePattern(Count);
 
 			//temporarily set shuffle chance to 1
-			float SavedShuffleChance = GlobalShuffleChance;
+			var savedShuffleChance = GlobalShuffleChance;
 			GlobalShuffleChance = 1f;
 
 			//first we decide whether we should be spherical or cartesian
-			NewPattern.SphericalCoordinates = Random.Range(0, 2) == 0 ? true : false;
+			newPattern.SphericalCoordinates = Random.Range(0, 2) == 0;
 
-			if (NewPattern.SphericalCoordinates) {
+			if (newPattern.SphericalCoordinates) {
 				//Shuffle X (aka radius)
-				RollShuffler(ID.CirclePosX, ref NewPattern);
+				RollShuffler(ID.CirclePosX, ref newPattern);
 
 				//Shuffle Y (aka theta) if in 3D mode
 				if (!RestrictThirdDimension) {
-					RollShufflerLoopable(ID.CirclePosY, ref NewPattern);
+					RollShufflerLoopable(ID.CirclePosY, ref newPattern);
 				} else {
 					//reset to make sure everything is in 2D
-					string savedname = NewPattern.Oscillators[ID.CirclePosY].Name;
-					NewPattern.Oscillators[ID.CirclePosY] = new Oscillator("CirclePosY", 0, 0, 0, 1, 0);
-					NewPattern.Oscillators[ID.CirclePosY].Name = savedname;
+					var savedName = newPattern.Oscillators[ID.CirclePosY].Name;
+					newPattern.Oscillators[ID.CirclePosY] = new Oscillator("CirclePosY", 0, 0, 0, 1, 0) {
+						Name = savedName
+					};
 				}
 
 				//Shuffle Z (aka phi)
-				RollShufflerLoopable(ID.CirclePosZ, ref NewPattern);
+				RollShufflerLoopable(ID.CirclePosZ, ref newPattern);
 			} else {
 				//Shuffle X and Y
-				RollShuffler(ID.CirclePosX, ref NewPattern);
-				RollShuffler(ID.CirclePosY, ref NewPattern);
+				RollShuffler(ID.CirclePosX, ref newPattern);
+				RollShuffler(ID.CirclePosY, ref newPattern);
 
 				//Shuffle Z if in 3D mode
-				if (!RestrictThirdDimension) RollShuffler(ID.CirclePosZ, ref NewPattern);
+				if (!RestrictThirdDimension) RollShuffler(ID.CirclePosZ, ref newPattern);
 				else {
 					//reset to make sure everything is in 2D
-					string savedname = NewPattern.Oscillators[ID.CirclePosZ].Name;
-					NewPattern.Oscillators[ID.CirclePosZ] = new Oscillator("CirclePosZ", 0, 0, 0, 1, 0);
-					NewPattern.Oscillators[ID.CirclePosZ].Name = savedname;
+					var savedName = newPattern.Oscillators[ID.CirclePosZ].Name;
+					newPattern.Oscillators[ID.CirclePosZ] = new Oscillator("CirclePosZ", 0, 0, 0, 1, 0) {
+						Name = savedName
+					};
 				}
 			}
 
 			//Shuffle rotation about X and Y axes if in 3D mode
 			if (!RestrictThirdDimension) {
-				RollShufflerLoopable(ID.CircleRotX, ref NewPattern);
-				RollShufflerLoopable(ID.CircleRotY, ref NewPattern);
+				RollShufflerLoopable(ID.CircleRotX, ref newPattern);
+				RollShufflerLoopable(ID.CircleRotY, ref newPattern);
 			} else {
 				//reset to make sure everything is in 2D
-				string savedname = NewPattern.Oscillators[ID.CircleRotX].Name;
-				NewPattern.Oscillators[ID.CircleRotX] = new Oscillator("CircleRotX", 0, 0, 0, 1, 0);
-				NewPattern.Oscillators[ID.CircleRotX].Name = savedname;
+				var savedName = newPattern.Oscillators[ID.CircleRotX].Name;
+				newPattern.Oscillators[ID.CircleRotX] = new Oscillator("CircleRotX", 0, 0, 0, 1, 0) {
+					Name = savedName
+				};
 
-				savedname = NewPattern.Oscillators[ID.CircleRotY].Name;
-				NewPattern.Oscillators[ID.CircleRotY] = new Oscillator("CircleRotY", 0, 0, 0, 1, 0);
-				NewPattern.Oscillators[ID.CircleRotY].Name = savedname;
+				savedName = newPattern.Oscillators[ID.CircleRotY].Name;
+				newPattern.Oscillators[ID.CircleRotY] = new Oscillator("CircleRotY", 0, 0, 0, 1, 0) {
+					Name = savedName
+				};
 			}
 
 			//Shuffle rotation about Z axis
-			RollShufflerLoopable(ID.CircleRotZ, ref NewPattern);
+			RollShufflerLoopable(ID.CircleRotZ, ref newPattern);
 
 			//Shuffle radius
-			RollShuffler(ID.CircleRad, ref NewPattern);
+			RollShuffler(ID.CircleRad, ref newPattern);
 
 			//Shuffle offset about X and Y axes if in 3D mode
 			if (!RestrictThirdDimension) {
-				RollShufflerLoopable(ID.LineRotX, ref NewPattern);
-				RollShufflerLoopable(ID.LineRotY, ref NewPattern);
+				RollShufflerLoopable(ID.LineRotX, ref newPattern);
+				RollShufflerLoopable(ID.LineRotY, ref newPattern);
 			} else {
 				//reset to make sure everything is in 2D
-				string savedname = NewPattern.Oscillators[ID.LineRotX].Name;
-				NewPattern.Oscillators[ID.LineRotX] = new Oscillator("LineRotX", 0, 0, 0, 1, 0);
-				NewPattern.Oscillators[ID.LineRotX].Name = savedname;
+				var savedName = newPattern.Oscillators[ID.LineRotX].Name;
+				newPattern.Oscillators[ID.LineRotX] = new Oscillator("LineRotX", 0, 0, 0, 1, 0) {
+					Name = savedName
+				};
 
-				savedname = NewPattern.Oscillators[ID.LineRotY].Name;
-				NewPattern.Oscillators[ID.LineRotY] = new Oscillator("LineRotY", 0, 0, 0, 1, 0);
-				NewPattern.Oscillators[ID.LineRotY].Name = savedname;
+				savedName = newPattern.Oscillators[ID.LineRotY].Name;
+				newPattern.Oscillators[ID.LineRotY] = new Oscillator("LineRotY", 0, 0, 0, 1, 0) {
+					Name = savedName
+				};
 			}
 
 			//Shuffle offset about Z axis
-			RollShufflerLoopable(ID.LineRotZ, ref NewPattern);
+			RollShufflerLoopable(ID.LineRotZ, ref newPattern);
 
 			//custom - line length and colors
 
 			//for line length we only randomise the total length
 			if (Roll(GlobalShuffleChance)) {
-				NewPattern.Oscillators[ID.LineLength] = new Oscillator("LineLength", 0,
-					Random.Range(Shufflers[ID.LineLength].AbsoluteMin, Shufflers[ID.LineLength].AbsoluteMax), 0, 1, 0);
-				NewPattern.Oscillators[ID.LineLength].Name = "Line Length";
+				newPattern.Oscillators[ID.LineLength] = new Oscillator("LineLength", 0,
+					Random.Range(Shufflers[ID.LineLength].AbsoluteMin, Shufflers[ID.LineLength].AbsoluteMax), 0, 1, 0) {
+					Name = "Line Length"
+				};
 			}
 
 
 			//we keep amplitude for both color values at zero because otherwise the pattern is just a rainbow mess
 			//mmm...rainbow mess
 			if (Roll(GlobalShuffleChance)) {
-				NewPattern.Oscillators[ID.ColorRange].Amplitude = 0f;
-				Shufflers[ID.ColorRange].RandomiseCenter(ref NewPattern.Oscillators[ID.ColorRange]);
+				newPattern.Oscillators[ID.ColorRange].Amplitude = 0f;
+				Shufflers[ID.ColorRange].RandomiseCenter(ref newPattern.Oscillators[ID.ColorRange]);
 			}
 
 			if (Roll(GlobalShuffleChance)) {
-				NewPattern.Oscillators[ID.ColorOffset].Amplitude = 0f;
-				Shufflers[ID.ColorOffset].RandomiseCenter(ref NewPattern.Oscillators[ID.ColorOffset]);
+				newPattern.Oscillators[ID.ColorOffset].Amplitude = 0f;
+				Shufflers[ID.ColorOffset].RandomiseCenter(ref newPattern.Oscillators[ID.ColorOffset]);
 			}
 
 			//Shuffle line count
 			if (Roll(GlobalShuffleChance)) {
-				NewPattern.LineCount = Random.Range(3, MaxLineCount + 1);
+				newPattern.LineCount = Random.Range(3, MaxLineCount + 1);
 			}
 
 			//reset shuffle chance to whatever it was before we started this method
-			GlobalShuffleChance = SavedShuffleChance;
+			GlobalShuffleChance = savedShuffleChance;
 
-			return NewPattern;
+			return newPattern;
 		}
 
 		/// <summary>
 		/// Reusable code snippet to shuffle a given oscillator
 		/// </summary>
 		/// <param name="index">Index of oscillator shuffler to target</param>
-		public void RollShuffler(int index, ref LineCirclePattern pattern)
+		/// <param name="pattern">Pattern to be mutated by this shuffle operation</param>
+		private void RollShuffler(int index, ref LineCirclePattern pattern)
 		{
 
 			//check whether we should shuffle at all
-			if (Roll(GlobalShuffleChance)) {
+			if (!Roll(GlobalShuffleChance)) return;
+			
+			//check whether we should freeze
+			if (Roll(FreezeChance)) {
+				Shufflers[index].RandomiseCenter(ref pattern.Oscillators[index]);
+				pattern.Oscillators[index].Amplitude = 0;
+			} else {
+				Shufflers[index].RandomiseRange(ref pattern.Oscillators[index]);
+				Shufflers[index].RandomisePhase(ref pattern.Oscillators[index]);
 
-				//check whether we should freeze
-				if (Roll(FreezeChance)) {
-					Shufflers[index].RandomiseCenter(ref pattern.Oscillators[index]);
-					pattern.Oscillators[index].Amplitude = 0;
-				} else {
-					Shufflers[index].RandomiseRange(ref pattern.Oscillators[index]);
-					Shufflers[index].RandomisePhase(ref pattern.Oscillators[index]);
-
-					//check whether we should use override frequency values
-					if (Shufflers[index].OverrideFrequency)
-						Shufflers[index].RandomiseFrequency(ref pattern.Oscillators[index]);
-					else
-						Shufflers[index].RandomiseFrequency(ref pattern.Oscillators[index], GlobalMinimumFrequency,
-							GlobalMaximumFrequency);
-				}
-
-				Shufflers[index].EnforceMaxFrequency(ref pattern.Oscillators[index]);
+				//check whether we should use override frequency values
+				if (Shufflers[index].OverrideFrequency)
+					Shufflers[index].RandomiseFrequency(ref pattern.Oscillators[index]);
+				else
+					Shufflers[index].RandomiseFrequency(ref pattern.Oscillators[index], 
+						GlobalMinimumFrequency, GlobalMaximumFrequency);
 			}
+
+			Shufflers[index].EnforceMaxFrequency(ref pattern.Oscillators[index]);
 		}
 
 		/// <summary>
 		/// Reusable code snippet to shuffle a given oscillator (used for angular oscillators that can be a sawtooth wave)
 		/// </summary>
 		/// <param name="index">Index of oscillator shuffler to target</param>
-		public void RollShufflerLoopable(int index, ref LineCirclePattern pattern)
+		/// <param name="pattern">Pattern to be mutated by this shuffle operation</param>
+		private void RollShufflerLoopable(int index, ref LineCirclePattern pattern)
 		{
 			//check to see if we should be a sawtooth
-			if (Roll(SawtoothChance))
-				pattern.Oscillators[index].Type = OscillatorShape.Sawtooth;
-			else
-				pattern.Oscillators[index].Type = OscillatorShape.Sine;
+			pattern.Oscillators[index].Type = Roll(SawtoothChance) 
+				? OscillatorShape.Sawtooth 
+				: OscillatorShape.Sine;
 
 			//do normal stuff
 			RollShuffler(index, ref pattern);
 
 			//if sawtooth, make sure we go from 0 to 2 pi (so one full revolution)
-			if (pattern.Oscillators[index].Type == OscillatorShape.Sawtooth) {
-				Shufflers[index].EnforceTwoPi(ref pattern.Oscillators[index]);
-				Shufflers[index].EnforceMaxFrequency(ref pattern.Oscillators[index]);
-			}
+			if (pattern.Oscillators[index].Type != OscillatorShape.Sawtooth) return;
+			
+			Shufflers[index].EnforceTwoPi(ref pattern.Oscillators[index]);
+			Shufflers[index].EnforceMaxFrequency(ref pattern.Oscillators[index]);
 		}
 
 		/// <summary>
 		/// Shortcut function to make code neater
 		/// </summary>
-		/// <param name="Chance">Chance from zero to one we will return true</param>
+		/// <param name="chance">Chance from zero to one we will return true</param>
 		/// <returns>Result of Random.Range call</returns>
-		private bool Roll(float Chance)
+		private static bool Roll(float chance)
 		{
-			return Random.Range(0f, 1f) < Chance;
+			return Random.Range(0f, 1f) < chance;
 		}
 	}
 }
