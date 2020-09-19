@@ -376,6 +376,13 @@ namespace LineCircles
 			if (pattern.Oscillators[index].Type != OscillatorShape.Sawtooth) return;
 			
 			OscillatorShuffler.EnforceTwoPi(ref pattern.Oscillators[index]);
+			
+			//Once we've done all this enforcing, we need to do one more pass on ensuring that the frequency isn't too high
+			if (Shufflers[index].OverrideFrequency)
+				Shufflers[index].RandomiseFrequency(ref pattern.Oscillators[index]);
+			else
+				OscillatorShuffler.RandomiseFrequency(ref pattern.Oscillators[index], 
+					GlobalMinimumFrequency, GlobalMaximumFrequency);
 			Shufflers[index].EnforceMaxFrequency(ref pattern.Oscillators[index]);
 		}
 
