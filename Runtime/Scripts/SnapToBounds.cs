@@ -89,12 +89,11 @@ namespace LineCircles
                     orthoSize / bounds.size.y,
                     orthoSize * camRatio / bounds.size.x);
             } else {
-                var cameraExtents = _camera.ScreenToWorldPoint(
-                    new Vector3(_camera.pixelWidth, _camera.pixelHeight, PerspectiveCenterDistance)
-                );
-                _targetSize = 2f * Mathf.Min(
-                    cameraExtents.x / bounds.size.x,
-                    cameraExtents.y / bounds.size.y);
+                var frustumHeight = 2.0f * PerspectiveCenterDistance * Mathf.Tan(_camera.fieldOfView * 0.5f * Mathf.Deg2Rad);
+                var frustumWidth = frustumHeight * camRatio;
+                _targetSize = Mathf.Min(
+                    frustumWidth / bounds.size.x,
+                    frustumHeight / bounds.size.y);
             }
 
             var t = transform;
