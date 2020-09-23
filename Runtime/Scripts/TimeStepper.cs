@@ -104,7 +104,7 @@ namespace LineCircles
 				
 				//If we've finished an oscillation period, shuffle to the next pattern
 				if (_timeSpanOscillationT >= Mathf.PI * 2f) {
-					if(_hasShuffler) _shuffler.NextPattern();
+					if(_hasShuffler && _shuffler.DoAutoShuffle) _shuffler.NextPattern();
 				}
 				
 				//Ensure that the front-facing edge is exactly on a line
