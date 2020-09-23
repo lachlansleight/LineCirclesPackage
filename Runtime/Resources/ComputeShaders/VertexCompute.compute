@@ -25,9 +25,6 @@ RWStructuredBuffer<LineCircleVertex> _LatestVerticesBuffer;
 RWStructuredBuffer<LineCircleVertex> _FirstVerticesBuffer;
 
 int _LineCount;
-int _IntervalOffset;
-int _LineInterval;
-
 float _TimeSpan;
 int _Spherical;
 
@@ -102,11 +99,7 @@ void RunSimulation (uint3 tid : SV_GroupThreadID, uint3 gid : SV_GroupID)
 	LineCircleVertex vertex = _VertexBuffer[vertexID + 6 * _LineCount * snapshotID];
 	
 	//Line interval fixing
-	if(_LineInterval > 1 && ((uint)snapshot.EmitTime + _IntervalOffset) % _LineInterval != 0) {
-	    snapshot.LineHidden = 1.0;
-	} else {
-	    snapshot.LineHidden = -1.0;
-	}
+	
 	
 	float3 rawPos = snapshot.CirclePosition;
     float3 pos = float3(0, 0, 0);

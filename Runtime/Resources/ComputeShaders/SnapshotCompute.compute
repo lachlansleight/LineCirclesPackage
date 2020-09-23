@@ -21,6 +21,8 @@ float _TimeStep;
 float _TimeOffset;
 int _TimeSpan;
 int _AutoScaleLines;
+int _IntervalOffset;
+int _LineInterval;
 
 //circle position
 int   circlePos_x_type;
@@ -146,6 +148,12 @@ void RunSimulation (uint3 tid : SV_GroupThreadID, uint3 gid : SV_GroupID)
 	} else {
 	    ThisSnapshot.Hidden = -1;
 	}
+	
+	if(_LineInterval > 1 && ((uint)ThisSnapshot.EmitTime + _IntervalOffset) % _LineInterval != 0) {
+        ThisSnapshot.LineHidden = 1.0;
+    } else {
+        ThisSnapshot.LineHidden = -1.0;
+    }
 
 	float t = ThisSnapshot.EmitTime * _TimeStep + _TimeOffset;
 

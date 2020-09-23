@@ -102,7 +102,7 @@
         
 
         void surf(Input IN, inout SurfaceOutput o)
-        {            
+        {          
             if(IN.hidden.x > 0) {
                 discard;
             }
