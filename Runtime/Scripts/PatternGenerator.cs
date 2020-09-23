@@ -75,6 +75,12 @@ namespace LineCircles
 		public bool RestrictThirdDimension = true;
 
 		/// <summary>
+		/// Whether to multiply the line length by the radius, for more organic shapes
+		/// </summary>
+		[Tooltip("Whether to multiply the line length by the radius, for more organic shapes")]
+		public bool AutoScaleLines = true;
+
+		/// <summary>
 		/// Shufflers for each target Oscillator
 		/// </summary>
 		[Tooltip("Shufflers for each target Oscillator")]
@@ -216,6 +222,8 @@ namespace LineCircles
 
 			//first we decide whether we should be spherical or cartesian
 			newPattern.SphericalCoordinates = Random.Range(0, 2) == 0;
+
+			newPattern.AutoScaleLines = AutoScaleLines;
 
 			if (newPattern.SphericalCoordinates) {
 				//Shuffle X (aka radius)

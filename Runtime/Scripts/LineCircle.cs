@@ -266,6 +266,7 @@ namespace LineCircles
 			_snapshotCompute.SetFloat("_TimeStep", pattern.TimeStep);
 			_snapshotCompute.SetFloat("_TimeOffset", pattern.TimeOffset);
 			_snapshotCompute.SetInt("_TimeSpan", (int) (pattern.TimeSpan / pattern.TimeStep));
+			_snapshotCompute.SetInt("_AutoScaleLines", pattern.AutoScaleLines ? 1 : 0);
 
 			_vertexCompute.SetInt("_LineCount", pattern.LineCount);
 			_vertexCompute.SetInt("_IntervalOffset", (int) (pattern.TimeOffset / pattern.TimeStep));

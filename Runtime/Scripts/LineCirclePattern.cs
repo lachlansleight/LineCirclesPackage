@@ -33,6 +33,12 @@ namespace LineCircles
 		public bool SphericalCoordinates;
 
 		/// <summary>
+		/// Whether to multiply the line length by the radius, for more organic shapes
+		/// </summary>
+		[Tooltip("Whether to multiply the line length by the radius, for more organic shapes")]
+		public bool AutoScaleLines;
+
+		/// <summary>
 		/// Draw a line every [n] time steps
 		/// </summary>
 		[Tooltip("Draw a line every [n] time steps")]
@@ -113,6 +119,7 @@ namespace LineCircles
 			Count = 10000;
 			LineCount = 12;
 			SphericalCoordinates = true;
+			AutoScaleLines = true;
 			LineInterval = 4;
 
 			TimeStep = 0.01f;
@@ -192,6 +199,7 @@ namespace LineCircles
 			LineCount = CopyTarget.LineCount;
 			SphericalCoordinates = CopyTarget.SphericalCoordinates;
 			LineInterval = CopyTarget.LineInterval;
+			AutoScaleLines = CopyTarget.AutoScaleLines;
 
 			TimeStep = CopyTarget.TimeStep;
 			TimeSpan = CopyTarget.TimeSpan;
@@ -223,6 +231,7 @@ namespace LineCircles
 			LineCount = Mathf.RoundToInt(Mathf.Lerp(PatternA.LineCount, PatternB.LineCount, LerpFactor));
 			SphericalCoordinates = LerpFactor < 0.5f ? PatternA.SphericalCoordinates : PatternB.SphericalCoordinates;
 			LineInterval = Mathf.RoundToInt(Mathf.Lerp(PatternA.LineInterval, PatternB.LineInterval, LerpFactor));
+			AutoScaleLines = LerpFactor < 0.5f ? PatternA.AutoScaleLines : PatternB.AutoScaleLines;
 
 			TimeStep = Mathf.Lerp(PatternA.TimeStep, PatternB.TimeStep, LerpFactor);
 			TimeSpan = Mathf.Lerp(PatternA.TimeSpan, PatternB.TimeSpan, LerpFactor);
