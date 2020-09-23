@@ -86,6 +86,11 @@ namespace LineCircles
 			});
 		}
 
+		private void Start()
+		{
+			NextPattern();
+		}
+
 		private void Update()
 		{
 			if (AcceptsKeyboardInput) {
