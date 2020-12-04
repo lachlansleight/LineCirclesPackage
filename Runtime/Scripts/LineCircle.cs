@@ -279,11 +279,15 @@ namespace LineCircles
 			_lineMat.SetFloat("_Alpha", pattern.LineColor.a * AlphaMultiplier);
 			_lineMat.SetMatrix("_LocalToWorld", transform.localToWorldMatrix);
 			_lineMat.SetMatrix("_WorldToLocal", transform.worldToLocalMatrix);
+			_lineMat.SetFloat("_TimeToZ", pattern.TimeToZ);
+			_lineMat.SetFloat("_ZFade", pattern.ZFade);
 
 			_fillMat.SetInt("_LineCount", pattern.LineCount);
 			_fillMat.SetFloat("_Alpha", pattern.FillColor.a * AlphaMultiplier);
 			_fillMat.SetMatrix("_LocalToWorld", transform.localToWorldMatrix);
 			_fillMat.SetMatrix("_WorldToLocal", transform.worldToLocalMatrix);
+			_fillMat.SetFloat("_TimeToZ", pattern.TimeToZ);
+			_fillMat.SetFloat("_ZFade", pattern.ZFade);
 
 
 //		_lineMat.SetInt("_Spherical", pattern.SphericalCoordinates ? 1 : 0);

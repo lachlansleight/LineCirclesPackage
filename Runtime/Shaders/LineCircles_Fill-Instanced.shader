@@ -64,6 +64,8 @@
 
         int _LineCount;
         float _Alpha; 
+        float _TimeToZ;
+        float _ZFade;
         float4x4 _LocalToWorld;
         float4x4 _WorldToLocal;
 
@@ -86,8 +88,10 @@
             uint snapshotID = unity_InstanceID;
 
             v.vertex = _VertexBuffer[vertexID].Position;
+            v.vertex.z += _TimeToZ * (float)snapshotID;
             
             o.color = _VertexBuffer[vertexID].Color;
+            o.color.a *= 1.0 - saturate(v.vertex.z / _ZFade);
             o.hidden = float2(_SnapshotBuffer[snapshotID].Hidden, _SnapshotBuffer[snapshotID].LineHidden);
             #endif
             
@@ -113,7 +117,7 @@
             #endif
             
             o.Albedo = IN.color;
-            o.Alpha = _Alpha;
+            o.Alpha = _Alpha * IN.color.a;
         }
 
         ENDCG

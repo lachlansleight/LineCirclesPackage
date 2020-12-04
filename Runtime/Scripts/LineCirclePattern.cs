@@ -33,6 +33,18 @@ namespace LineCircles
 		public bool SphericalCoordinates;
 
 		/// <summary>
+		/// Adds a time-dependent offset to each snapshot's Z position
+		/// </summary>
+		[Tooltip("Adds a time-dependent offset to each snapshot's Z position")]
+		public float TimeToZ;
+		
+		/// <summary>
+		/// Fades the color of each snapshot dependent on its local Z coordinate linearly from zero to this value
+		/// </summary>
+		[Tooltip("Fades the color of each snapshot linearly from zero to this value")]
+		public float ZFade;
+
+		/// <summary>
 		/// Whether to multiply the line length by the radius, for more organic shapes
 		/// </summary>
 		[Tooltip("Whether to multiply the line length by the radius, for more organic shapes")]
@@ -148,6 +160,9 @@ namespace LineCircles
 			Oscillators[ID.LineLength] = new Oscillator("LineLength", 0, 0, 1, 1, 0);
 			Oscillators[ID.ColorOffset] = new Oscillator("ColorOffset", 0, 0, 1, 1, 0);
 			Oscillators[ID.ColorRange] = new Oscillator("ColorRange", 0, 0, 1, 1, 0);
+
+			TimeToZ = 0f;
+			ZFade = float.MaxValue;
 		}
 
 		/// <summary>
@@ -187,6 +202,9 @@ namespace LineCircles
 			Oscillators[ID.LineLength] = new Oscillator("LineLength", 0, 0, 1, 1, 0);
 			Oscillators[ID.ColorOffset] = new Oscillator("ColorOffset", 0, 0, 1, 1, 0);
 			Oscillators[ID.ColorRange] = new Oscillator("ColorRange", 0, 0, 1, 1, 0);
+			
+			TimeToZ = 0f;
+			ZFade = float.MaxValue;
 		}
 
 		/// <summary>
@@ -217,6 +235,9 @@ namespace LineCircles
 			for (int i = 0; i < Oscillators.Length; i++) {
 				Oscillators[i] = new Oscillator(CopyTarget.Oscillators[i]);
 			}
+			
+			TimeToZ = CopyTarget.TimeToZ;
+			ZFade = CopyTarget.ZFade;
 		}
 
 		/// <summary>
@@ -249,6 +270,9 @@ namespace LineCircles
 			for (int i = 0; i < Oscillators.Length; i++) {
 				Oscillators[i] = new Oscillator(PatternA.Oscillators[i], PatternB.Oscillators[i], LerpFactor);
 			}
+			
+			TimeToZ = LerpFactor < 0.5f ? PatternA.TimeToZ : PatternB.TimeToZ;
+			ZFade = LerpFactor < 0.5f ? PatternA.ZFade : PatternB.ZFade;
 		}
 
 		public Bounds GetMaxPossibleBounds()

@@ -16,6 +16,8 @@ namespace LineCircles
         public bool DrawFill;
         [Range(0f, 1f)] public float FillOpacity;
         public bool AutoScaleLines;
+        public float TimeToZ;
+        public float ZFade;
         
         private LineCircle _lineCircle;
 
@@ -33,6 +35,8 @@ namespace LineCircles
             DrawFill = _lineCircle.Pattern.DrawFill;
             FillOpacity = _lineCircle.Pattern.FillColor.a;
             AutoScaleLines = _lineCircle.Pattern.AutoScaleLines;
+            TimeToZ = _lineCircle.Pattern.TimeToZ;
+            ZFade = _lineCircle.Pattern.ZFade;
         }
 
         private void Update()
@@ -44,6 +48,8 @@ namespace LineCircles
             _lineCircle.Pattern.DrawFill = DrawFill;
             _lineCircle.Pattern.FillColor = new Color(1f, 1f, 1f, FillOpacity);
             _lineCircle.Pattern.AutoScaleLines = AutoScaleLines;
+            _lineCircle.Pattern.TimeToZ = TimeToZ;
+            _lineCircle.Pattern.ZFade = ZFade;
         }
     }
 }
