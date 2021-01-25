@@ -274,6 +274,8 @@ namespace LineCircles
 			_vertexCompute.SetFloat("_TimeSpan", pattern.TimeSpan);
 			_vertexCompute.SetInt("_Spherical", pattern.SphericalCoordinates ? 1 : 0);
 			_vertexCompute.SetInt("_FirstIndex", (int) (pattern.TimeSpan / pattern.TimeStep));
+			_vertexCompute.SetFloat("_LineScaleMultiplier", pattern.LineScaleMultiplier);
+			_vertexCompute.SetFloat("_LineRotationMultiplier", pattern.LineRotationMultiplier);
 
 			_lineMat.SetInt("_LineCount", pattern.LineCount);
 			_lineMat.SetFloat("_Alpha", pattern.LineColor.a * AlphaMultiplier);

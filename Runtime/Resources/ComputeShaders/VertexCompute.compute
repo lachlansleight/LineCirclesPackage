@@ -27,6 +27,8 @@ RWStructuredBuffer<LineCircleVertex> _FirstVerticesBuffer;
 int _LineCount;
 float _TimeSpan;
 int _Spherical;
+float _LineScaleMultiplier;
+float _LineRotationMultiplier;
 
 int _FirstIndex;
 
@@ -122,6 +124,8 @@ void RunSimulation (uint3 tid : SV_GroupThreadID, uint3 gid : SV_GroupID)
     float iT = iF * 2.0 * 3.141592653589794;
 
     float3 defaultPosition = float3(cos(iT), sin(iT), 0);
+    length *= 1.0 + (iF * _LineScaleMultiplier);
+    lineRot *= (iF * _LineRotationMultiplier);
 
     bool inner = (vertexID % 6) > 0 && (vertexID % 6) < 4;
     vertex.Position = float4(rotVec(rad * defaultPosition, rot) + pos, 1);

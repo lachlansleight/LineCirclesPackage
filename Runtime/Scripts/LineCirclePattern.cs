@@ -25,6 +25,18 @@ namespace LineCircles
 		[Range(1, 16)]
 		[Tooltip("The number of lines distributed around the circle")]
 		public int LineCount = 12;
+		
+		/// <summary>
+		/// How much to scale the line length of each line around the circle relative to the previous one
+		/// </summary>
+		[Tooltip("How much to scale the line length of each line around the circle relative to the previous one")]
+		public float LineScaleMultiplier = 0f;
+		
+		/// <summary>
+		/// How much to rotate each line relative to the previous one
+		/// </summary>
+		[Tooltip("How much to rotate each line relative to the previous one")]
+		public float LineRotationMultiplier = 0f;
 
 		/// <summary>
 		/// Whether to use Spherical or Cartesian Coordinates with CirclePos[XYZ]
@@ -130,6 +142,8 @@ namespace LineCircles
 		{
 			Count = 10000;
 			LineCount = 12;
+			LineScaleMultiplier = 0f;
+			LineRotationMultiplier = 0f;
 			SphericalCoordinates = true;
 			AutoScaleLines = true;
 			LineInterval = 4;
@@ -173,6 +187,8 @@ namespace LineCircles
 		{
 			Count = SnapshotCount;
 			LineCount = 12;
+			LineScaleMultiplier = 0f;
+			LineRotationMultiplier = 0f;
 			SphericalCoordinates = true;
 			LineInterval = 4;
 
@@ -215,6 +231,8 @@ namespace LineCircles
 		{
 			Count = CopyTarget.Count;
 			LineCount = CopyTarget.LineCount;
+			LineScaleMultiplier = CopyTarget.LineScaleMultiplier;
+			LineRotationMultiplier = CopyTarget.LineRotationMultiplier;
 			SphericalCoordinates = CopyTarget.SphericalCoordinates;
 			LineInterval = CopyTarget.LineInterval;
 			AutoScaleLines = CopyTarget.AutoScaleLines;
@@ -250,6 +268,8 @@ namespace LineCircles
 		{
 			Count = Mathf.RoundToInt(Mathf.Lerp(PatternA.Count, PatternB.Count, LerpFactor));
 			LineCount = Mathf.RoundToInt(Mathf.Lerp(PatternA.LineCount, PatternB.LineCount, LerpFactor));
+			LineScaleMultiplier = Mathf.Lerp(PatternA.LineScaleMultiplier, PatternB.LineScaleMultiplier, LerpFactor);
+			LineRotationMultiplier = Mathf.Lerp(PatternA.LineRotationMultiplier, PatternB.LineRotationMultiplier, LerpFactor);
 			SphericalCoordinates = LerpFactor < 0.5f ? PatternA.SphericalCoordinates : PatternB.SphericalCoordinates;
 			LineInterval = Mathf.RoundToInt(Mathf.Lerp(PatternA.LineInterval, PatternB.LineInterval, LerpFactor));
 			AutoScaleLines = LerpFactor < 0.5f ? PatternA.AutoScaleLines : PatternB.AutoScaleLines;
