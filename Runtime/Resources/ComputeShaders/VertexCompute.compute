@@ -67,7 +67,7 @@ float3 SpherToCart(float3 c) {
     return float3(x, z, y);
 }
 
-//Note - X coordinate of num threads divided by six represents the maximum line count!
+//Note - floor(numthreads.x / 6) represents the maximum line count!
 //64 => 10 lines
 //96 = 16 lines
 //128 = 21 lines
