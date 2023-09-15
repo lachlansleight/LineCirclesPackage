@@ -140,6 +140,9 @@ namespace LineCircles
 				case OscillatorShape.Square:
 					//we don't need to check change per second because it's changing instantly!
 					return;
+				case OscillatorShape.Inactive:
+					//we don't need to check change per second because it's not changing!
+					return;
 				default:
 					throw new ArgumentOutOfRangeException($"Unexpected value {target.Type} for OscillatorShuffler EnforceMaxFrequency");
 			}

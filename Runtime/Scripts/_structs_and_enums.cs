@@ -212,6 +212,7 @@ namespace LineCircles
 		Sine = 1,
 		Triangle = 2,
 		Sawtooth = 3,
-		Square = 4
+		Square = 4,
+		Inactive = 100,
 	}
 }

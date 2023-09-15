@@ -9,6 +9,7 @@
         Tags { "RenderType"="Transparent" }
 
         Cull Off
+        ZTest Off
 
         CGPROGRAM
 

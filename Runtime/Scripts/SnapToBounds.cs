@@ -12,6 +12,7 @@ namespace LineCircles
         public bool DrawBounds;
         public bool SetPositionOnUpdate;
         public bool SetScaleOnUpdate;
+        public bool SetDistanceWhenForced = true;
         [Range(0f, 2f)] public float SizeMultiplier = 1f;
         public float PerspectiveCenterDistance = 5f;
         
@@ -100,7 +101,7 @@ namespace LineCircles
             if (SetScaleOnUpdate || force) {
                 t.localScale = SizeMultiplier * _targetSize * Vector3.one;
             }
-            if (SetPositionOnUpdate || force) {
+            if (SetPositionOnUpdate || (force && SetDistanceWhenForced)) {
                 var scale = t.localScale.x;
                 var zPos = _camera.orthographic 
                     ? _camera.nearClipPlane + bounds.size.z * scale
