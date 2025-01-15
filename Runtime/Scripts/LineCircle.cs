@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace LineCircles
@@ -36,6 +37,13 @@ namespace LineCircles
 		private ComputeShader _vertexCompute;
 		private Material _lineMat;
 		private Material _fillMat;
+
+		/// <summary>
+		/// If true, pattern will always be fully drawn (i.e. TimeSpan set to Max Time Possible
+		/// </summary>
+		[FormerlySerializedAs("InitializeAsFullyDrawn")]
+		[Tooltip("If true, pattern will always be fully drawn (i.e. TimeSpan set to Max Time Possible")]
+		public bool ForceFullDraw = false;
 
 		/// <summary>
 		/// Parameters controlling simulation visuals
@@ -108,7 +116,7 @@ namespace LineCircles
 		{
 			_minX = _minY = _minZ = float.MaxValue;
 			_maxX = _maxY = _maxZ = -float.MaxValue;
-			transform.localScale *= 0.5f;
+			//transform.localScale *= 0.5f;
 		}
 
 		private void ClearEverything()
@@ -181,6 +189,8 @@ namespace LineCircles
 
 		private void DoComputeLoop()
 		{
+			if (ForceFullDraw) Pattern.TimeSpan = Pattern.MaxTimePossible;
+			
 			SetComputeValues(Pattern);
 			if (Pattern.LineCount != _setLineCount) UpdateMeshes(Pattern.LineCount);
 

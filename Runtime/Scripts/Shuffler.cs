@@ -120,6 +120,7 @@ namespace LineCircles
 			}
 		}
 
+        
 		public void NextPattern()
 		{
 			if (Memory.CurrentPosition < (Memory.Patterns.Count - 1)) {
@@ -135,6 +136,7 @@ namespace LineCircles
 			}
 		}
 
+        
 		public void PreviousPattern()
 		{
 			if (Memory.CurrentPosition <= 0) return;
